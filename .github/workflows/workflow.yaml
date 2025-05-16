@@ -4,7 +4,7 @@ on: pull_request
 
 jobs: 
     continuos-integration:
-        runs-on: ubunto-latest
+        runs-on: self-hosted
         steps:
             - uses: actions/checkout@v3
             - name: Using Node.js
