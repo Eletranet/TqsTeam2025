@@ -18,6 +18,7 @@ jobs:
         with:
           java-version: 17
           distribution: 'zulu' # Alternative distribution options are available.
+          cache: maven  # Esta linha ativa o cache do Maven e instala o Maven
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
