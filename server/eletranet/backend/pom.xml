@@ -109,6 +109,23 @@
 						<goals>
 							<goal>report</goal>
 						</goals>
+
+					</execution>
+
+					<!-- Gera o relatório com exclusão -->
+					<execution>
+						<id>default-report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<!-- Excluir exatamente esta classe -->
+								<exclude>eletranet/backend/BackendApplication.class</exclude>
+
+							</excludes>
+						</configuration>
 					</execution>
 
 					<!-- For the coverage Ratio , futuramente

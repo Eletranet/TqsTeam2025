@@ -36,3 +36,14 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=APG2000_TqsTeam2025
+
+
+      - name: Import results to Xray
+        uses: mikepenz/xray-action@v3
+        with:
+          username: ${{ secrets.XRAY_CLIENT_ID }}
+          password: ${{ secrets.XRAY_CLIENT_SECRET }}
+          testFormat: "junit"
+          testPaths: "server/eletranet/backend/target/surefire-reports/TEST-*.xml"
+          testExecKey: "SCRUM-48"
+          projectKey: "SCRUM"
