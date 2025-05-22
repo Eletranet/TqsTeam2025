@@ -29,7 +29,7 @@ public class StationController {
         if (stationFound.isPresent()) {
             return new ResponseEntity<>(stationFound.get(), HttpStatus.OK);
         }else{
-            logger.error("Station not found with name: {}", name);
+            logger.error("Station not found with that username");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
