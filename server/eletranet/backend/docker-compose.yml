@@ -1,0 +1,9 @@
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: tqs_backend
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: tqs
+    ports:
+      - "5432:5432"
