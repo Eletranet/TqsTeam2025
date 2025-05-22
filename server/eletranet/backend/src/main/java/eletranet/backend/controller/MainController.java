@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping(path="/api")
-@CrossOrigin("*")
 public class MainController {
 
     @GetMapping("/alldata")
