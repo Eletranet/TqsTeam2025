@@ -1,5 +1,6 @@
 package eletranet.backend.defaults;
 
+import eletranet.backend.config.Generated;
 import eletranet.backend.entity.Station;
 import eletranet.backend.enums.StationStatus;
 import eletranet.backend.repository.StationRepository;
@@ -10,7 +11,7 @@ import org.springframework.boot.ApplicationRunner;
 
 import org.springframework.stereotype.Component;
 
-
+@Generated
 @Component
 public class DefaultsStations implements ApplicationRunner {
     private static final Logger logger = LoggerFactory.getLogger(DefaultsStations.class);
