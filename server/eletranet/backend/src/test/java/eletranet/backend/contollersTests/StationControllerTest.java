@@ -1,5 +1,7 @@
 package eletranet.backend.contollersTests;
 
+import eletranet.backend.config.SecurityFilter;
+import eletranet.backend.config.TokenProvider;
 import eletranet.backend.controller.StationController;
 import eletranet.backend.entity.Station;
 import eletranet.backend.enums.StationStatus;
@@ -27,6 +29,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(StationController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class StationControllerTest {
+    @MockitoBean
+    private TokenProvider tokenProvider;
+    @MockitoBean
+    private SecurityFilter securityFilter;
 
     @Autowired
     private MockMvc mockMvc;
