@@ -11,11 +11,17 @@ import SignIn from "./pages/SignIn.jsx";
 import Home from './pages/Home.jsx';
 import { Navbar } from "./components/Navbar.jsx"
 import Register from './pages/Register.jsx';
+import Mapa from "./pages/maps.js"
+import Footer from "./components/Footer.js"
+import { Box, Container } from '@mui/material';
+
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
+
+    <Box>
     <BrowserRouter>
         <Navbar/>
 
@@ -23,11 +29,14 @@ function App() {
         <Route path="/loguin" element={<SignIn /> }> </Route>
         <Route path="/" element={<Home/> }> </Route>
         <Route path="/register" element={<Register/> }> </Route>
+        <Route path="/mapa" element={<Mapa/> }> </Route>
 
 
       </Routes>  
-    {/*<Footer />*/}
-    </BrowserRouter>
+    <Footer/>
+    </BrowserRouter>      
+    </Box>
+
     </>
   )
 }

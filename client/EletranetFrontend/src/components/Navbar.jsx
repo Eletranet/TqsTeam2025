@@ -31,8 +31,8 @@ return (
       { window.location.pathname !== "/loguin"  && window.location.pathname !=="/register" ? (
           <>
           
-              <Button color="inherit" onClick={()=>{navigator("/")}}>Minhas Reservas</Button>
-              <Button color="inherit" onClick={()=>{navigator("/")}}>Pesquisar Postos</Button>
+              <Button color="inherit" onClick={()=>{navigator("*")}}>Minhas Reservas</Button>
+              <Button color="inherit" onClick={()=>{navigator("/mapa")}}>Ver Postos</Button>
               <Button color="inherit" onClick={()=>{
                   localStorage.clear();
                   navigator("/loguin")

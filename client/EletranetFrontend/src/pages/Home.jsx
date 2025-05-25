@@ -12,8 +12,14 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
+import {APIProvider} from '@vis.gl/react-google-maps';
 
 function Home(){
+
+
+
+
+  
  const navigate = useNavigate();
 
       useEffect(() => {
