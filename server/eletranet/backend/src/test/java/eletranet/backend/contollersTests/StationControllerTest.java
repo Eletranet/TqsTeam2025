@@ -4,6 +4,7 @@ import eletranet.backend.config.SecurityFilter;
 import eletranet.backend.config.TokenProvider;
 import eletranet.backend.controller.StationController;
 import eletranet.backend.entity.Station;
+import eletranet.backend.enums.ConnectorType;
 import eletranet.backend.enums.StationStatus;
 import eletranet.backend.services.StationServices;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import eletranet.backend.enums.ConnectorType;
 
 
 @WebMvcTest(StationController.class)
@@ -43,10 +45,10 @@ class StationControllerTest {
 
     @BeforeEach
     void setUp() {
-        Station s1 = new Station("Estação Central", "Lisboa", StationStatus.STATUS_ATIVA, 0.25, 50, "Tipo1");
-        Station s2 = new Station("Estação Norte", "Porto", StationStatus.STATUS_ATIVA, 0.30, 75, "CCS");
-        Station s3 = new Station("Estação Sul", "Faro", StationStatus.STATUS_DESLIGADO, 0.20, 60, "CHAdeMO");
-        Station s4 = new Station("Estação Ribeirinha", "Coimbra", StationStatus.STATUS_RESERVADO, 0.27, 80, "Tipo22");
+        Station s1  = new Station("EletraNet Praça do Peixe",             StationStatus.STATUS_ATIVA,     0.26,  80, ConnectorType.CCS,      40.6406, -8.6580);
+        Station s2  = new Station("EletraNet Fórum Aveiro",              StationStatus.STATUS_OCUPADO,   0.28,  90, ConnectorType.TIPO2,    40.6506, -8.6580);
+        Station s3  = new Station("EletraNet Estação CP",               StationStatus.STATUS_RESERVADO, 0.24,  75, ConnectorType.CHADEMO,  40.6306, -8.6580);
+        Station s4  = new Station("EletraNet Sé de Aveiro",             StationStatus.STATUS_ATIVA,     0.25,  70, ConnectorType.CCS,      40.6372, -8.6520);
 
         when(stationServices.getStationByName(s1.getName())).thenReturn(Optional.of(s1));
         when(stationServices.getAllStations()).thenReturn(List.of(s1, s2,s3,s4));
@@ -56,11 +58,11 @@ class StationControllerTest {
     void getStationByName() throws Exception {
         mockMvc.perform(
                         get("/api/getStationByname")
-                                .param("name", "Estação Central")
+                                .param("name", "EletraNet Praça do Peixe")
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk());
-            verify(stationServices, times(1)).getStationByName("Estação Central");
+            verify(stationServices, times(1)).getStationByName("EletraNet Praça do Peixe");
     }
     @Test
     void getAllStations() throws Exception {
@@ -78,7 +80,7 @@ class StationControllerTest {
         when(stationServices.getStationByName(Mockito.anyString())).thenReturn(Optional.empty());
         mockMvc.perform(
                 get("/api/getStationByname")
-                        .param("name", "Estação Central da luz")
+                        .param("name", "EletraNet Sé de Aveiro2sd")
                         .contentType(MediaType.APPLICATION_JSON)
 
         ).andExpect(status().isNotFound());
