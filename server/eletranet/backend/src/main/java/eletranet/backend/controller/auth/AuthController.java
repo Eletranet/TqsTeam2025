@@ -44,7 +44,7 @@ public class AuthController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
         }
 
-        logger.info("Sucessfully registered user with username {}", newUser.getUsername());
+        logger.info("Sucessfully registered new user  ");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
