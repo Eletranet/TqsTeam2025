@@ -44,7 +44,7 @@ public class AuthController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
         }
 
-        logger.info("Sucessfully registered new user  ");
+        logger.info("Sucessfully registered new user ");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
@@ -57,7 +57,7 @@ public class AuthController {
         Authentication authUser=authenticationManager.authenticate(authToken);
 
         String token = tokenService.generateAccessToken((Person) authUser.getPrincipal());
-        logger.info("Sucessfully logged in user with username {}", username);
+        logger.info("User X Sucessfully logged");
 
         return ResponseEntity.ok(Map.of("token", token, "username", username, "role", "null"));
     }
