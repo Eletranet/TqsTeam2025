@@ -49,7 +49,6 @@ public class DefaultsStations implements ApplicationRunner {
         Station s20 = new Station("EletraNet Parque da Cidade",         StationStatus.STATUS_RESERVADO, 0.31,  80, ConnectorType.TIPO2,    40.6630, -8.6560);
 
         if(stationRepository.count()>0){
-           stationRepository.deleteAll();
             return;
         }
 
