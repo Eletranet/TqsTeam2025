@@ -245,7 +245,7 @@ const filteredStations = stations.filter(station => {
   }
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', marginTop: "10px" }}>
+    <Box sx={{ display: 'flex', height: '82vh' }}>
       
       {/* Mapa - 80% */}
       <Box sx={{ flex: 4, position: 'relative' }}>

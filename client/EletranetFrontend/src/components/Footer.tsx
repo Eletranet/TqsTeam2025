@@ -15,7 +15,7 @@ const Footer = () => {
         textAlign: 'center',
       }}
     >
-      <Typography variant="body2">
+      <Typography variant="body2" sx={{marginTop:"1.5%"}}>
         © {new Date().getFullYear()} ElectraNet. Todos os direitos reservados.
       </Typography>
     </Box>
