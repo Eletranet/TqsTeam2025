@@ -35,6 +35,7 @@ type Poi = {
   name?: string,
   id?: number,
   status?: string
+  connectorType?: string
 }
 
 const Mapa = () => {
@@ -42,12 +43,59 @@ const Mapa = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [StationStatusFormValue, setStationStatusFormValue] = React.useState('');
+  const [selectedConnectorTypes, setSelectedConnectorTypes] = useState(() => ({
+    todos: true,
+    CCS: false,
+    TIPO2: false,
+    CHADEMO: false,
+    TIPO1: false
+  }));
+  const handleConnectorTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, checked } = event.target;
+  
+  setSelectedConnectorTypes(prev => {
+    const newState = { ...prev, [name]: checked };
+    
+    // Se "Todos" foi marcado, desmarcar todos os outros
+    if (name === 'todos' && checked) {
+      return {
+        todos: true,
+        CCS: false,
+        TIPO2: false,
+        CHADEMO: false,
+        TIPO1: false
+      };
+    }
+
+ 
+    
+    // Se algum tipo específico foi marcado, desmarcar "Todos"
+    if (name !== 'todos' && checked) {
+      newState.todos = false;
+    }
+    
+    // Se todos os tipos específicos foram desmarcados, marcar "Todos"
+    if (name !== 'todos' && !checked) {
+      const hasAnySpecificSelected = Object.entries(newState)
+        .filter(([key]) => key !== 'todos')
+        .some(([_, value]) => value);
+      
+      if (!hasAnySpecificSelected) {
+        newState.todos = true;
+      }
+    }
+
+    
+    
+    return newState;
+  });
+};
 
 
   const handleChange = (event: SelectChangeEvent) => {
     const newValue = event.target.value;
     setStationStatusFormValue(newValue);
-    console.log(newValue); // Este sim já tem o valor novo
+    console.log("status -> " , newValue); // Este sim já tem o valor novo
 };
 
   useEffect(() => {
@@ -77,7 +125,8 @@ const Mapa = () => {
               },
               name: station.name,
               id: station.id,
-              status: station.status
+              status: station.status,
+              connectorType:station.connectorType
             };
           }).filter(station => 
             // Filtra estações com coordenadas válidas
@@ -96,7 +145,7 @@ const Mapa = () => {
         
       } catch (err) {
         console.error('Erro ao buscar estações:', err);
-        setError('Erro ao carregar as estações. Verifique sua conexão.');
+        setError('Não foi possível carregar os postos neste momento.. Verifique sua conexão.');
       } finally {
         setLoading(false);
       }
@@ -108,10 +157,25 @@ const Mapa = () => {
 
 
 
-  const filteredStations = StationStatusFormValue
-    ? stations.filter(station => station.status === StationStatusFormValue)
-    : stations;
-
+//  const filteredStations = StationStatusFormValue
+ //   ? stations.filter(station => station.status === StationStatusFormValue)
+  //  : stations;
+const filteredStations = stations.filter(station => {
+  // Filtro por status
+  const statusMatch = StationStatusFormValue ? station.status === StationStatusFormValue : true;
+  
+  // Filtro por tipo de conector
+  let connectorMatch = true;
+  if (!selectedConnectorTypes.todos) {
+    const selectedTypes = Object.entries(selectedConnectorTypes)
+      .filter(([key, value]) => key !== 'todos' && value)
+      .map(([key, _]) => key);
+    connectorMatch = selectedTypes.length === 0 || selectedTypes.includes(station.connectorType);
+    console.log(station)
+  }
+  
+  return statusMatch && connectorMatch;
+});
 
   // Mostrar loading enquanto busca dados
   if (loading) {
@@ -213,7 +277,7 @@ const Mapa = () => {
              <Typography variant="h4" gutterBottom>
             FILTROS
             </Typography>
-            <Typography variant="body2" gutterBottom >
+            <Typography variant="body2" gutterBottom sx={{ fontWeight: 'bold' }} >
                 STATUS
             </Typography>
                 <Divider orientation="horizontal" flexItem />
@@ -238,19 +302,79 @@ const Mapa = () => {
                     </FormControl>
                    
                 </div>
-            <Typography variant="body2" gutterBottom marginTop={3}>
+          
+        
+            <FormGroup>
+            <Box sx={{display:"inline-flex"}}>
+               
+                  <Typography variant='body2' gutterBottom marginTop={3} sx={{ fontWeight: 'bold' }} >
                 TIPO DE CONECTOR
-            </Typography>
+                </Typography>
+            
+                <FormControlLabel 
+                sx={{marginLeft:"5%"}}
+                  control={
+                    <Checkbox 
+                      checked={selectedConnectorTypes.todos}
+                      onChange={handleConnectorTypeChange}
+                      name="todos"
+                    />
+                  } 
+                  label="Todos" 
+                />  
+            </Box>
+
             <Divider orientation="horizontal" flexItem />
 
-           <FormGroup>
-                <FormControlLabel control={<Checkbox defaultChecked />} label="Todos" />
-                <FormControlLabel control={<Checkbox />} label="CCS" />
-                <FormControlLabel control={<Checkbox />} label="Tipo2" />
-                <FormControlLabel control={<Checkbox />} label="CHAdeMO" />
-                <FormControlLabel control={<Checkbox />} label="Tipo1" />
-        </FormGroup>
+            
+                <FormControlLabel 
+                  control={
+                    <Checkbox 
+                      checked={selectedConnectorTypes.CCS}
+                      onChange={handleConnectorTypeChange}
+                      name="CCS"
+                    />
+                  } 
+                  label="CCS" 
+                />
+                <FormControlLabel 
+                  control={
+                    <Checkbox 
+                      checked={selectedConnectorTypes.TIPO2}
+                      onChange={handleConnectorTypeChange}
+                      name="TIPO2"
+                    />
+                  } 
+                  label="TIPO2" 
+                />
+                <FormControlLabel 
+                  control={
+                    <Checkbox 
+                      checked={selectedConnectorTypes.CHADEMO}
+                      onChange={handleConnectorTypeChange}
+                      name="CHADEMO"
+                    />
+                  } 
+                  label="CHADEMO" 
+                />
+                <FormControlLabel 
+                  control={
+                    <Checkbox 
+                      checked={selectedConnectorTypes.TIPO1}
+                      onChange={handleConnectorTypeChange}
+                      name="TIPO1"
+                    />
+                  } 
+                  label="TIPO1" 
+                />
+            </FormGroup>
 
+            {/* Contador de estações filtradas */}
+            <Box sx={{ mt: 2, p: 1, bgcolor: '#e3f2fd', borderRadius: 1 }}>
+              <Typography variant="caption" color="primary">
+                Mostrando {filteredStations.length} de {stations.length} estações
+              </Typography>
+            </Box>
 
 
         </Box>
