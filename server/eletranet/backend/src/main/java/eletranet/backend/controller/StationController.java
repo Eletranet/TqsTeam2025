@@ -1,5 +1,6 @@
 package eletranet.backend.controller;
 import eletranet.backend.entity.Station;
+import eletranet.backend.services.PersonServices;
 import eletranet.backend.services.StationServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +20,10 @@ public class StationController {
     private static final Logger logger = LoggerFactory.getLogger(StationController.class);
 
     StationServices stationServices;
-    public StationController(StationServices stationServices) {
+    PersonServices personServices;
+
+    public StationController(StationServices stationServices , PersonServices personServices) {
+        this.personServices = personServices;
         this.stationServices = stationServices;
     }
 
@@ -36,6 +41,13 @@ public class StationController {
 
     @GetMapping(path="/getAllStations")
     public ResponseEntity<List<Station>> getAllStations() {
+
+        var person = personServices.getUserFromContext();
+
+        if (person == null){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not logged in");
+        }
+
         List<Station> stations = stationServices.getAllStations();
         if (stations.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

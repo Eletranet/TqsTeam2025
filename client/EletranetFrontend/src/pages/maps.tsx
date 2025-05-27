@@ -26,6 +26,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { useNavigate } from "react-router-dom";
 
 import {getAllStations} from "../services/MainServices"
 
@@ -50,6 +51,16 @@ const Mapa = () => {
     CHADEMO: false,
     TIPO1: false
   }));
+  const navigate=useNavigate()
+
+        useEffect(() => {
+        const token = localStorage.getItem("TokenEletraNet");
+        if (!token) {
+        
+          navigate("/loguin");
+
+        }
+      }, [navigate]);
   const handleConnectorTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   const { name, checked } = event.target;
   
