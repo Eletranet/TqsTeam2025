@@ -25,7 +25,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import eletranet.backend.enums.ConnectorType;
 
 
 @WebMvcTest(StationController.class)
