@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import eletranet.backend.enums.ConnectorType;
 
 @NoArgsConstructor
 @Getter
@@ -16,19 +17,22 @@ public class Station {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private String name;
-    private String location;
     private StationStatus status;
     private double pricePerHour;
     private double maxPower;
-    private String connectorType;
+    @Enumerated(EnumType.STRING)
+    private ConnectorType connectorType;
+    private Double latitude;
+    private Double longitude;
 
-    public  Station(String name, String location, StationStatus status, double pricePerHour, double maxPower, String connectorType) {
+    public  Station(String name, StationStatus status, double pricePerHour, double maxPower, ConnectorType connectorType , Double latitude, Double longitude) {
         this.name = name;
-        this.location = location;
         this.status = status;
         this.pricePerHour = pricePerHour;
         this.maxPower = maxPower;
         this.connectorType = connectorType;
+        this.latitude = latitude;
+        this.longitude = longitude;
 
     }
 

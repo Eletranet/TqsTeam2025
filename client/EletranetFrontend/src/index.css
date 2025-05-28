@@ -1,0 +1,40 @@
+body {
+  background-color: #222; /* ou outra cor */
+  /* ou background-image, por exemplo: */
+  /* background-image: url('/assets/background.jpg'); */
+  /* background-size: cover; */
+  /* background-position: center; */
+  margin: 0; /* remove margem padrão */
+  min-height: 100vh;
+   
+  
+}
+/* Esconder scrollbar em Firefox */
+body {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE 10+ */
+}
+
+/* Esconder scrollbar em Chrome, Safari e Edge */
+body::-webkit-scrollbar {
+  display: none;
+}
+/* Remove scrollbar para webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Remove scrollbar para Firefox */
+html {
+  scrollbar-width: none;
+}
+
+/* Para garantir que funcione em todos os elementos */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
