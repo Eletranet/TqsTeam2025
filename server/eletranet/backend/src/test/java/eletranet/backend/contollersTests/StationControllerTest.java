@@ -3,9 +3,11 @@ package eletranet.backend.contollersTests;
 import eletranet.backend.config.SecurityFilter;
 import eletranet.backend.config.TokenProvider;
 import eletranet.backend.controller.StationController;
+import eletranet.backend.entity.Person;
 import eletranet.backend.entity.Station;
 import eletranet.backend.enums.ConnectorType;
 import eletranet.backend.enums.StationStatus;
+import eletranet.backend.services.PersonServices;
 import eletranet.backend.services.StationServices;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,8 @@ class StationControllerTest {
 
     @MockitoBean
     private StationServices stationServices;
+    @MockitoBean
+    private PersonServices personServices;
 
 
     @BeforeEach
@@ -51,10 +55,13 @@ class StationControllerTest {
 
         when(stationServices.getStationByName(s1.getName())).thenReturn(Optional.of(s1));
         when(stationServices.getAllStations()).thenReturn(List.of(s1, s2,s3,s4));
+        when(personServices.getUserFromContext()).thenReturn(new Person());
+
     }
 
     @Test
     void getStationByName() throws Exception {
+
         mockMvc.perform(
                         get("/api/getStationByname")
                                 .param("name", "EletraNet Praça do Peixe")
@@ -65,6 +72,7 @@ class StationControllerTest {
     }
     @Test
     void getAllStations() throws Exception {
+
         mockMvc.perform(
                         get("/api/getAllStations")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -73,9 +81,21 @@ class StationControllerTest {
         verify(stationServices, Mockito.times(1)).getAllStations();
 
     }
+    @Test
+    void getAllStationsNoUserContext() throws Exception {
+        when(personServices.getUserFromContext()).thenReturn(null);
+        mockMvc.perform(
+                        get("/api/getAllStations")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isUnauthorized());
+        verify(stationServices, Mockito.times(0)).getAllStations();
+        verify(personServices, Mockito.times(1)).getUserFromContext();
 
+    }
     @Test
     void getStationBynameNotFound() throws Exception {
+
         when(stationServices.getStationByName(Mockito.anyString())).thenReturn(Optional.empty());
         mockMvc.perform(
                 get("/api/getStationByname")
@@ -87,6 +107,7 @@ class StationControllerTest {
     }
     @Test
     void getAllStationsNotFound() throws Exception {
+
         when(stationServices.getAllStations()).thenReturn(List.of());
         mockMvc.perform(get("/api/getAllStations"))
                 .andExpect(status().isNoContent());
