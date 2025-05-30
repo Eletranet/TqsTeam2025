@@ -2,7 +2,8 @@
 
 Funcionalidade: Filtrar a lista de estações
   Contexto: Lista de estações
-    Dada uma lista de estações acabada de abrir
+    Dado que tenho sessão iniciada
+       E acabo de abrir a lista de estações
 
   Cenário: Filtrar por estado
     Quando seleciono o estado "Ativa"
