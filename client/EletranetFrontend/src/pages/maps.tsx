@@ -296,7 +296,7 @@ const filteredStations = stations.filter(station => {
                     <FormControl sx={{ m: 1, minWidth: 120 ,marginTop:2}} >
                         <Select
                         labelId="demo-simple-select-helper-label"
-                        id="station-state-selector"
+                        id="station-state-selector-button"
                         value={StationStatusFormValue}
                         onChange={handleChange}
                         displayEmpty

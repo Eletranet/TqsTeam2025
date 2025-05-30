@@ -5,8 +5,10 @@ import io.cucumber.java.pt.Então;
 import io.cucumber.java.pt.Quando;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
@@ -28,10 +30,21 @@ public class FiltrosListaEstação {
 
     @Quando("seleciono o estado {string}")
     public void selecionarEstado(String estado) {
-        driver.findElement(By.cssSelector(".MuiButtonBase-root:nth-child(4)")).click();
-        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
-        Select drpEstado = new Select(driver.findElement(By.id("station-state-selector")));
-        drpEstado.selectByVisibleText(estado);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        // Click the select button to open dropdown
+        WebElement selectButton = wait.until(
+                ExpectedConditions.elementToBeClickable(By.id("station-state-selector-button"))
+        );
+        selectButton.click();
+
+        // Wait for option with text "Ativa" and click it
+        // MUI dropdown options are typically rendered as <li> elements
+        String xpath = String.format("//li[contains(text(), %s)]", estado);
+        WebElement option = wait.until(
+                ExpectedConditions.elementToBeClickable(By.xpath(xpath))
+        );
+        option.click();
     }
 
     @Então("só vejo estações cujo estado é {string}")
