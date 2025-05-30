@@ -14,6 +14,7 @@ import Register from './pages/Register.jsx';
 import Mapa from "./pages/maps.js"
 import Footer from "./components/Footer.js"
 import { Box, Container } from '@mui/material';
+import MinhasReservas from "./pages/MinhasReservas.tsx";
 
 function App() {
   const [count, setCount] = useState(0)
@@ -30,6 +31,7 @@ function App() {
         <Route path="/" element={<Home/> }> </Route>
         <Route path="/register" element={<Register/> }> </Route>
         <Route path="/mapa" element={<Mapa/> }> </Route>
+        <Route path="/minhas_reservas" element={<MinhasReservas/>}> </Route>
 
 
       </Routes>  

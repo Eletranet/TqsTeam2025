@@ -13,9 +13,12 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
 import {APIProvider} from '@vis.gl/react-google-maps';
-
+import CustomModal from "../components/CustomModal"
 function Home(){
+  const [open, setOpen] = React.useState(false);
 
+  const abrirModal = () => setOpen(true);
+  const fecharModal = () => setOpen(false);
 
 
 
@@ -33,9 +36,19 @@ function Home(){
 
     return(
 
-        <>
-        Home Page / tem que estar logado
-        </>
+     <div>
+      <button onClick={abrirModal}>Abrir Modal</button>
+
+      <CustomModal
+        open={open}
+        onClose={fecharModal}
+        title="Título Personalizado"
+        description="Este é o conteúdo do modal"
+      >
+        <p>Conteúdo adicional pode ir aqui.</p>
+        <button onClick={fecharModal}>Fechar</button>
+      </CustomModal>
+    </div>
     )
 }
 export default Home

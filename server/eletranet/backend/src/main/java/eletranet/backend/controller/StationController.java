@@ -43,6 +43,7 @@ public class StationController {
     public ResponseEntity<List<Station>> getAllStations() {
 
         var person = personServices.getUserFromContext();
+        System.out.println(person);
 
         if (person == null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not logged in");

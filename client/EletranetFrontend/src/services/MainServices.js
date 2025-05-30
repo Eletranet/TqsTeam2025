@@ -2,6 +2,7 @@ import axios from 'axios'
 
 const backendAuthApi = "http://localhost:8080/api"
 
+const reservaAPiurl="http://localhost:8080/reserva"
 
 export const getAllStations = async () => {
   try {
@@ -20,6 +21,73 @@ export const getAllStations = async () => {
     }
   } catch (error) {
     console.error("Erro ao buscar estações:", error);
+    throw error;
+  }
+};
+
+export const getAllReservas = async () => {
+  try {
+    const token = localStorage.getItem("TokenEletraNet") ? localStorage.getItem("TokenEletraNet"): undefined;
+    if (token == undefined) {return}
+    const result = await axios.get(reservaAPiurl + "/getAll", {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+    });
+
+    
+    if (result.status === 200) {
+      console.log("Reservas buscados da bd:", result.data);
+      return result.data; 
+    }
+  } catch (error) {
+    console.error("Erro ao buscar reservas:", error);
+    throw error;
+  }
+};
+
+export const getMyReservas = async () => {
+  try {
+    const token = localStorage.getItem("TokenEletraNet") ? localStorage.getItem("TokenEletraNet"): undefined;
+    if (token == undefined) {return}
+    const result = await axios.get(reservaAPiurl + "/getReservasByIdUsuario", {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+    });
+
+    
+    if (result.status === 200) {
+      console.log("Reservas buscados da bd:", result.data);
+      return result.data; 
+    }
+  } catch (error) {
+    console.error("Erro ao buscar reservas:", error);
+    throw error;
+  }
+};
+
+
+
+export const fazerReserva = async (stationId,dataReserva) => {
+  const url=`http://localhost:8080/reserva/fazerReserva?stationID=${stationId}&dataReserva=${dataReserva}`
+
+  try {
+    const token = localStorage.getItem("TokenEletraNet") ? localStorage.getItem("TokenEletraNet"): undefined;
+    if (token == undefined) {return}
+    const result = await axios.post(url, {},{
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+    });
+
+    
+    if (result.status === 200) {
+      return result.data; 
+    }
+  } catch (error) {
+    alert("Error")
+    console.error("Erro ao fazer reserva:", error);
     throw error;
   }
 };

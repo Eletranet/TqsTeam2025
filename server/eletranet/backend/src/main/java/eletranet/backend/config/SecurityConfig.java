@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-
+                        .requestMatchers(HttpMethod.POST, "/reserva/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
