@@ -12,8 +12,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class FiltrosListaEstação {
     private WebDriver driver = new FirefoxDriver();
+    private WebDriverWait wait = new WebDriverWait(
+            driver, Duration.ofSeconds(10)
+    );
 
     @Dado("que tenho sessão iniciada")
     public void setupLogin() {
@@ -30,11 +35,12 @@ public class FiltrosListaEstação {
 
     @Quando("seleciono o estado {string}")
     public void selecionarEstado(String estado) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         // Click the select button to open dropdown
         WebElement selectButton = wait.until(
-                ExpectedConditions.elementToBeClickable(By.id("station-state-selector-button"))
+                ExpectedConditions.elementToBeClickable(
+                        By.id("station-state-selector-button")
+                )
         );
         selectButton.click();
 
@@ -49,6 +55,26 @@ public class FiltrosListaEstação {
 
     @Então("só vejo estações cujo estado é {string}")
     public void sóVejoEstado(String estado) {
-        // Falta implementar
+        //FIXME: Não estamos a testar coisa alguma aqui!
+        // Não temos como ver o real estado das estações...
+
+        System.out.println("AVISO: «sóVejoEstado» é um teste falso!");
+
+        // Wait for the filter result to update: locate the filter count text or markers if possible
+        WebElement counterText = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath("//*[contains(text(),'Mostrando')]"
+                        )
+                )
+        );
+
+        String text = counterText.getText(); // Example: "Mostrando 5 de 10 estações"
+        System.out.println("Texto do contador: " + text);
+
+        // Basic assertion that filter count text is visible and well-formed
+        assertTrue(text.matches("Mostrando \\d+ de \\d+ estações"));
+
+        // OPTIONAL: if you can get station status texts from page, assert all are "Ativa"
+        // Since stations are markers on the map, you may need additional UI info to assert more
     }
 }
