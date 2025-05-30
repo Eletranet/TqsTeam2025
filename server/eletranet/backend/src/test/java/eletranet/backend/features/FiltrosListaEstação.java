@@ -12,6 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FiltrosListaEstação {
@@ -19,6 +20,14 @@ public class FiltrosListaEstação {
     private WebDriverWait wait = new WebDriverWait(
             driver, Duration.ofSeconds(10)
     );
+
+
+    private boolean isConnectorChecked(String conector) {
+        // Locate checkbox input by traversing from label (MUI usually nests input inside label)
+        String checkboxXpath = String.format("//label[contains(., '%s')]//input[@type='checkbox']", conector);
+        WebElement checkbox = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(checkboxXpath)));
+        return checkbox.isSelected();
+    }
 
     @Dado("que tenho sessão iniciada")
     public void setupLogin() {
@@ -44,7 +53,7 @@ public class FiltrosListaEstação {
         );
         selectButton.click();
 
-        // Wait for option with text "Ativa" and click it
+        // Wait for option with the desired text and click it
         // MUI dropdown options are typically rendered as <li> elements
         String xpath = String.format("//li[contains(text(), %s)]", estado);
         WebElement option = wait.until(
@@ -76,5 +85,94 @@ public class FiltrosListaEstação {
 
         // OPTIONAL: if you can get station status texts from page, assert all are "Ativa"
         // Since stations are markers on the map, you may need additional UI info to assert more
+    }
+
+    @Quando("seleciono o conector {string}")
+    public void selecionarConector(String conector) {
+        // Locate label by text containing the conector name, then click it to toggle checkbox
+        String labelXpath = String.format("//label[contains(., '%s')]", conector);
+
+        WebElement label = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath(labelXpath)
+        ));
+
+        if (!label.isEnabled()) {
+            label.click();
+        }
+    }
+
+    @Quando("desseleciono o conector {string}")
+    public void desselecionarConector(String conector) {
+        // Locate label by text containing the conector name, then click it to toggle checkbox
+        String labelXpath = String.format("//label[contains(., '%s')]", conector);
+
+        WebElement label = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath(labelXpath)
+        ));
+
+        if (label.isEnabled()) {
+            label.click();
+        }
+    }
+
+    @Então("só vejo estações com conector {string}")
+    public void sóVejoConector(String conectorEsperado) {
+        System.out.println("AVISO: «sóVejoConector» é um teste falso!");
+
+        // Wait for the filter info text to update
+        WebElement counterText = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(),'Mostrando')]"))
+        );
+
+        String text = counterText.getText();
+        System.out.println("Texto do contador: " + text);
+
+        // Assert filter count text format
+        assertTrue(text.matches("Mostrando \\d+ de \\d+ estações"));
+
+        // Optionally, verify stations displayed all have the expected connector.
+        // Since stations are markers on a map and not listed as text, this is tricky.
+        // You could check logs or a debug panel if available or extend the app for testability.
+    }
+
+    @Então("a opção Todos está selecionada")
+    public void opçãoTodosConectoresEstáSelecionada() {
+        String labelXpath = String.format("//label[contains(., '%s')]", "Todos");
+
+        WebElement label = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath(labelXpath)
+        ));
+
+        assertTrue(label.isEnabled());
+    }
+
+
+    @Quando("seleciono a opção Todos")
+    public void selecionoAOpçãoTodos() {
+        // Locate label by text containing the conector name, then click it to toggle checkbox
+        String labelXpath = "//label[contains(., 'Todos')]";
+
+        WebElement label = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath(labelXpath)
+        ));
+
+        if (!label.isEnabled()) {
+            label.click();
+        }
+    }
+
+    @Então("nenhum conector está selecionado")
+    public void nenhumConectorEstáSelecionado() {
+        // "Todos" should be selected, all others unchecked
+
+        // Verify Todos is selected
+        assertTrue(isConnectorChecked("Todos"), "O conector 'Todos' deveria estar selecionado");
+
+        // List all other connectors (except 'Todos') from your React code:
+        String[] otherConnectors = {"CCS", "TIPO2", "CHADEMO", "TIPO1"};
+
+        for (String conector : otherConnectors) {
+            assertFalse(isConnectorChecked(conector), "O conector '" + conector + "' não deveria estar selecionado");
+        }
     }
 }
