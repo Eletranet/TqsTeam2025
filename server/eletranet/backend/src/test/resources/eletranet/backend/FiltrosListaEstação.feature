@@ -3,11 +3,11 @@
 Funcionalidade: Filtrar a lista de estações
   Contexto: Lista de estações
     Dado que tenho sessão iniciada
-       E acabo de abrir a lista de estações
+       E que acabo de abrir a lista de estações
 
   Cenário: Filtrar por estado
-    Quando seleciono o estado "Ativa"
-    Então só vejo estações cujo estado é "Ativa"
+    Quando seleciono o estado Ativa
+    Então só vejo estações cujo estado é Ativa
 
   # Cenário: Filtrar por tipo de conector
   #   Quando seleciono o conector "CCS"

@@ -301,7 +301,7 @@ const filteredStations = stations.filter(station => {
                         onChange={handleChange}
                         displayEmpty
                         >
-                        <MenuItem value={"STATUS_ATIVA"}>Activa</MenuItem>
+                        <MenuItem value={"STATUS_ATIVA"}>Ativa</MenuItem>
                         <MenuItem value={"STATUS_OCUPADO"}>Ocupado</MenuItem>
                         <MenuItem value={"STATUS_DESLIGADO"}>Desligado</MenuItem>
                         <MenuItem value={"STATUS_RESERVADO"}>Reservado</MenuItem>
