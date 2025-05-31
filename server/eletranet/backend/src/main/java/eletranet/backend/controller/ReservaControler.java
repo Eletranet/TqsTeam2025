@@ -6,6 +6,7 @@ import eletranet.backend.entity.Reserva;
 import eletranet.backend.entity.Station;
 import eletranet.backend.enums.ReservaStatus;
 import eletranet.backend.enums.StationStatus;
+import eletranet.backend.repository.ReservaRepository;
 import eletranet.backend.services.PersonServices;
 import eletranet.backend.services.ReservaServices;
 import eletranet.backend.services.StationServices;
@@ -67,11 +68,13 @@ public class ReservaControler {
 
 
     @PostMapping("/fazerReserva")
-    public ResponseEntity<Reserva> fazerReserva(@RequestParam String dataReserva, @RequestParam Long stationID){
+    public ResponseEntity<Reserva> fazerReserva(@RequestParam String dataReserva, @RequestParam Long stationID,
+                                                @RequestParam String horaReserva
+
+    ){
+
         var person = personServices.getUserFromContext();
         Optional<Station> station = stationServices.getStationById(stationID);
-
-
         if(station.isEmpty() || person == null){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -80,12 +83,25 @@ public class ReservaControler {
             logger.info("Reserva nao efetuada porque o posto esta {}" , atucalStatus);
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
-        Reserva reserva = new Reserva(person.getId(),person.getUsername(),ReservaStatus.ACTIVO,dataReserva,station.get().getPricePerHour(), station.get().getName(),stationID);
+
+        /// ver se ja existe resevara para o posto no mesmo dia e horario
+        Reserva reserva = new Reserva(person.getId(),person.getUsername(),ReservaStatus.ACTIVO,dataReserva,station.get().getPricePerHour(), station.get().getName(),stationID,horaReserva);
+
+        Boolean isValid=reservaServices.isReservaValid(reserva,personServices);
+
+        if(isValid){
+            Reserva saved = reservaServices.save(reserva);
+            logger.info("Reserva {} salva com sucesso", reserva.getIdReserva());
+
+            return  new ResponseEntity<>(saved,HttpStatus.OK);
+
+        }else{
+            return  new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        /* ------ */
 
 
-        Reserva saved = reservaServices.save(reserva);
-        logger.info("Reserva {} salva com sucesso", reserva.getIdReserva());
-        return  new ResponseEntity<>(saved,HttpStatus.OK);
 
     }
 

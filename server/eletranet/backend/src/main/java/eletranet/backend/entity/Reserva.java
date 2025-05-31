@@ -25,9 +25,9 @@ public class Reserva {
     private Double valorReserva;
     private String stationName;
     private Long stationId;
+    private String horaReserva;
 
-
-    public Reserva(Long idUsuario,String nameCliente,ReservaStatus statusreserva  , String dataReserva, Double valorReserva, String stationName, Long stationId) {
+    public Reserva(Long idUsuario,String nameCliente,ReservaStatus statusreserva  , String dataReserva, Double valorReserva, String stationName, Long stationId,String horaReserva) {
         this.idUsuario = idUsuario;
         this.nameCliente = nameCliente;
         this.statusReserva =statusreserva;
@@ -35,6 +35,7 @@ public class Reserva {
         this.valorReserva = valorReserva;
         this.stationName = stationName;
         this.stationId = stationId;
+        this.horaReserva=horaReserva;
 
     }
 
@@ -48,7 +49,9 @@ public class Reserva {
                 ", dataReserva='" + dataReserva + '\'' +
                 ", valorReserva=" + valorReserva +
                 ", stationName='" + stationName + '\'' +
-                ", stationId=" + stationId +
+                ", stationId=" + stationId +'\''+
+                ", horaReserva=" + horaReserva +
+
                 '}';
     }
 }

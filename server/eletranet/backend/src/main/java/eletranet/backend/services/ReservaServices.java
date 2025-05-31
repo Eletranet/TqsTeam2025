@@ -12,4 +12,6 @@ public interface ReservaServices {
     Reserva save(Reserva reserva);
     boolean cancelarReserva(Long idReserva);
     List<Reserva> findByIdUsuario(Long idCliente);
+
+    boolean isReservaValid(Reserva reserva,PersonServices personServices);
 }

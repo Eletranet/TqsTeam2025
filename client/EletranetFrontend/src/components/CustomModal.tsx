@@ -25,7 +25,7 @@ export default function CustomModal({ open, onClose, title, description, childre
            <img 
           src="https://caetanoretail.pt/site/uploads/2023/07/Postos-carregamento-carros-eletricos-media-64b5c4142ea74.jpg" 
           alt="Descrição da imagem" 
-          style={{ width: 650, maxHeight: '300px', objectFit: 'cover' }} 
+          style={{ width: 650, maxHeight: '200px', objectFit: 'cover' }} 
         />
         {title && <h2 id="custom-modal-title" className="modal-title">{title}</h2>}
         {description && <p id="custom-modal-description" className="modal-description">{description}</p>}

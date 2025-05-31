@@ -3,6 +3,7 @@ package eletranet.backend.services.imp;
 import eletranet.backend.entity.Reserva;
 import eletranet.backend.enums.ReservaStatus;
 import eletranet.backend.repository.ReservaRepository;
+import eletranet.backend.services.PersonServices;
 import eletranet.backend.services.ReservaServices;
 import org.springframework.stereotype.Service;
 
@@ -62,5 +63,18 @@ public class ReservaServicesIMP  implements ReservaServices {
     public List<Reserva> findByIdUsuario(Long idCliente) {
         return reservaRepository.findByIdUsuario(idCliente);
 
+    }
+
+    @Override
+    public boolean isReservaValid(Reserva reserva, PersonServices personServices) {
+        var person = personServices.getUserFromContext();
+        List<Reserva> reservaList =findByClienteId(person.getId());
+
+        for(Reserva reserva1:reservaList){
+            if(reserva1.getDataReserva().equals(reserva.getDataReserva()) && reserva1.getHoraReserva().equals(reserva.getHoraReserva())){
+                return  false;
+            }
+        }
+        return  true;
     }
 }

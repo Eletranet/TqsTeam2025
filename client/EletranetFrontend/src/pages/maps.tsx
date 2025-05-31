@@ -100,16 +100,13 @@ const ReservaCalendario = ({ selectedStation }) => {
       const reservaData = {
         data: selectedDate.toLocaleDateString('pt-PT'),
         hora: selectedHour,
-        timestamp: selectedDate.getTime()
+        selectedStationID:selectedStation.id
       };
 
-    const reserva = await fazerReserva(selectedStation.id,reservaData.data)
+    const reserva = await fazerReserva(reservaData)
 
 
     if(reserva){
-
-      console.log('Reserva confirmada:', reservaData);
-      localStorage.setItem('reservaEstacao', JSON.stringify(reservaData));
       setIsReserved(true);
       
       setTimeout(() => {
@@ -830,7 +827,7 @@ const Mapa = () => {
 
 
             
-            <Box sx={{ display: 'flex', gap: 3,marginTop:"10%",marginLeft:"-3%", alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', gap: 3,marginTop:"2%",marginLeft:"-3%", alignItems: 'center' }}>
               <ReservaCalendario selectedStation={selectedStation}/>
               <button 
                 onClick={fecharModal}
@@ -844,6 +841,19 @@ const Mapa = () => {
                 }}
               >
                 Fechar
+              </button>
+                <button 
+                onClick={()=>alert("Ver rotas")}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: 'red',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Ver Rotas
               </button>
             </Box>
           </Box>

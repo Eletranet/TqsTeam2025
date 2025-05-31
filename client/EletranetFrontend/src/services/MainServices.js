@@ -69,8 +69,10 @@ export const getMyReservas = async () => {
 
 
 
-export const fazerReserva = async (stationId,dataReserva) => {
-  const url=`http://localhost:8080/reserva/fazerReserva?stationID=${stationId}&dataReserva=${dataReserva}`
+export const fazerReserva = async (reservaData) => {
+  alert(reservaData.hora)
+  
+  const url=`http://localhost:8080/reserva/fazerReserva?stationID=${reservaData.selectedStationID}&dataReserva=${reservaData.data}&horaReserva=${reservaData.hora}`
 
   try {
     const token = localStorage.getItem("TokenEletraNet") ? localStorage.getItem("TokenEletraNet"): undefined;
