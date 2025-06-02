@@ -70,10 +70,10 @@ public class ReservaControler {
     // adicionar param duracao e param tipo de carga escolhida(rapido ,super rapido normal), preco varia com tipo de carga mas rapido mas caro
 
     @PostMapping("/fazerReserva")
-    public ResponseEntity<Reserva> fazerReserva(@RequestParam String dataReserva, @RequestParam Long stationID,
-                                                @RequestParam String horaReserva
-
+    public ResponseEntity<Reserva> fazerReserva(@RequestParam String dataReserva,@RequestParam String duracaoReserva ,@RequestParam Long stationID,
+                                                @RequestParam String horaReserva, @RequestParam String tipoCaregamento
     ){
+
 
         var person = personServices.getUserFromContext();
         Optional<Station> station = stationServices.getStationById(stationID);
@@ -88,17 +88,19 @@ public class ReservaControler {
 
         /// ver se ja existe resevara para o posto no mesmo dia e horario
 
-        Reserva reserva = new Reserva(person.getId(),person.getUsername(),ReservaStatus.ACTIVO,dataReserva,station.get().getPricePerHour(), station.get().getName(),stationID,horaReserva);
+        Reserva reserva = new Reserva(person.getId(),ReservaStatus.PENDENTE,dataReserva,station.get().getPricePerHour(), station.get().getName(),stationID,horaReserva,duracaoReserva,tipoCaregamento);
 
-        Boolean isValid=reservaServices.isReservaValid(reserva,personServices);
 
-        if(isValid){
+        boolean isValid=reservaServices.existeConflitoDeReservaPendente(reserva);
+
+        if(!isValid){
             Reserva saved = reservaServices.save(reserva);
             logger.info("Reserva {} salva com sucesso", reserva.getIdReserva());
 
             return  new ResponseEntity<>(saved,HttpStatus.OK);
 
         }else{
+            logger.info("Reserva  nao efetuada, porque ja existe um nesse posto e nessa data");
             return  new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
 
@@ -108,14 +110,14 @@ public class ReservaControler {
 
     }
 
-    @PutMapping("/cancelarReserva")
-    public  ResponseEntity<String> cancelarReserva(@RequestParam Long idReserva){
-        boolean canceled = reservaServices.cancelarReserva(idReserva);
-        if(canceled){
-            logger.info("Reserva {} cancelada com sucesso", idReserva);
-            return new ResponseEntity<>("Reserva cancelada com Sucesso",HttpStatus.OK);
+    @PutMapping("/manageReserva")
+    public  ResponseEntity<String> cancelarReserva(@RequestParam Long idReserva,@RequestParam String operation){
+        boolean operationStatus = reservaServices.manageReserva(idReserva,operation);
+        if(operationStatus){
+            logger.info("Reserva {} atualiazada com sucesso", idReserva);
+            return new ResponseEntity<>("Reserva atualiazada com Sucesso",HttpStatus.OK);
         }else{
-            return new ResponseEntity<>("Reserva nao encontrada",HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Erro ao autualizar a reserva",HttpStatus.NOT_ACCEPTABLE);
         }
 
     }

@@ -1,4 +1,3 @@
-// Componente Mapa corrigido
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {createRoot} from 'react-dom/client';
 import Divider from '@mui/material/Divider';
@@ -40,6 +39,9 @@ const ReservaCalendario = ({ selectedStation }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedHour, setSelectedHour] = useState('');
+  const [selectedDuracao, setSelectedDuracao] = useState('');
+  const [selectedTipoCaregamento, setSelectedTipoCaregamento] = useState('');
+
   const [isReserved, setIsReserved] = useState(false);
 
   const today = new Date();
@@ -50,6 +52,11 @@ const ReservaCalendario = ({ selectedStation }) => {
   const [displayMonth, setDisplayMonth] = useState(currentMonth);
   const [displayYear, setDisplayYear] = useState(currentYear);
 
+
+  //ESTADOS para o modal de erro
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+
+  const [errorMessage, setErrorMessage] = useState('');
   const isDateValid = (date) => {
     const checkDate = new Date(displayYear, displayMonth, date);
     return checkDate >= new Date(currentYear, currentMonth, currentDay);
@@ -96,12 +103,14 @@ const ReservaCalendario = ({ selectedStation }) => {
   };
 
   const confirmarReserva = async () => {
-    if (selectedDate && selectedHour) {
+    if (selectedDate && selectedHour && selectedDuracao && selectedTipoCaregamento) {
       const reservaData = {
         data: selectedDate.toLocaleDateString('pt-PT'),
         hora: selectedHour,
-        selectedStationID:selectedStation.id
-      };
+        duracao:selectedDuracao,
+        selectedStationID:selectedStation.id,
+        tipoCaregamento:selectedTipoCaregamento
+      }
 
     const reserva = await fazerReserva(reservaData)
 
@@ -114,13 +123,15 @@ const ReservaCalendario = ({ selectedStation }) => {
         setIsCalendarOpen(false);
         setSelectedDate(null);
         setSelectedHour('');
-      }, 3000);
+        setSelectedDuracao('');
+        setSelectedTipoCaregamento('');
+      }, 2000);
 
     }else{
-      alert("Reserva nao efetuada")
-      
+      setErrorMessage("Não foi possível efetuar o pedido de reserva. Tente novamente.");
+      setIsErrorModalOpen(true);      
     }
-      
+
 
     }
   };
@@ -135,6 +146,12 @@ const ReservaCalendario = ({ selectedStation }) => {
   const horariosDisponiveis = [
     '08:00', '09:00', '10:00', '11:00', '12:00', '13:00',
     '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'
+  ];
+ const duracaoDisponiveis = [
+    1,2,3,4,5
+  ];
+ const tipoCarregamentoDisponiveis = [
+    "Rápido","Super Rápido","Normal"
   ];
 
   return (
@@ -343,6 +360,67 @@ const ReservaCalendario = ({ selectedStation }) => {
                           <option key={hora} value={hora}>{hora}</option>
                         ))}
                       </select>
+                      
+                      <label style={{
+                        display: 'block',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        color: '#374151',
+                        marginBottom: '8px',
+                        marginTop:"2%"
+                        
+                     }}>
+                        🕒 Selecionar Duracao:
+                      </label>
+                      <select
+                        value={selectedDuracao}
+                        onChange={(e) => setSelectedDuracao(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid #d1d5db',
+                          borderRadius: '8px',
+                          fontSize: '14px'
+                        }}
+                      >
+                        <option value="">Escolha uma Duracao</option>
+                        {duracaoDisponiveis.map(duracao => (
+                          <option key={duracao} value={duracao}>{duracao}</option>
+                        ))}
+                      </select>
+
+                   <label style={{
+                        display: 'block',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        color: '#374151',
+                        marginBottom: '8px',
+                        marginTop:"2%"
+                        
+                     }}>
+                         Selecionar Tipo de carregamento:
+                      </label>
+                      <select
+                        value={selectedTipoCaregamento}
+                        onChange={(e) => setSelectedTipoCaregamento(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid #d1d5db',
+                          borderRadius: '8px',
+                          fontSize: '14px'
+                        }}
+                      >
+                        <option value="">Escolha o tipo de velocidade de carregamento</option>
+                        {tipoCarregamentoDisponiveis.map(tipo => (
+                          <option key={tipo} value={tipo}>{tipo}</option>
+                        ))}
+                      </select>
+
+
+
+
+                      
                     </div>
                   )}
 
@@ -366,6 +444,19 @@ const ReservaCalendario = ({ selectedStation }) => {
                           <strong>Horário:</strong> {selectedHour}
                         </p>
                       )}
+
+
+                       
+                      {selectedDuracao && (
+                        <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#1e40af' }}>
+                          <strong>Duração:</strong> {selectedDuracao} hora/s
+                        </p>
+                      )}
+                       {selectedTipoCaregamento && (
+                        <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#1e40af' }}>
+                          <strong>Tipo carregamento:</strong> {selectedTipoCaregamento}
+                        </p>
+                      )}
                     </div>
                   )}
 
@@ -386,15 +477,15 @@ const ReservaCalendario = ({ selectedStation }) => {
                     </button>
                     <button
                       onClick={confirmarReserva}
-                      disabled={!selectedDate || !selectedHour}
+                      disabled={!selectedDate || !selectedHour  || !selectedDuracao || !selectedTipoCaregamento}
                       style={{
                         flex: 1,
                         padding: '8px 16px',
-                        backgroundColor: selectedDate && selectedHour ? 'green' : '#d1d5db',
+                        backgroundColor: selectedDate && selectedHour && selectedDuracao && selectedTipoCaregamento? 'green' : '#d1d5db',
                         color: 'white',
                         border: 'none',
                         borderRadius: '8px',
-                        cursor: selectedDate && selectedHour ? 'pointer' : 'not-allowed'
+                        cursor: selectedDate && selectedHour && selectedDuracao && selectedTipoCaregamento? 'pointer' : 'not-allowed'
                       }}
                     >
                       Confirmar Reserva
@@ -405,13 +496,144 @@ const ReservaCalendario = ({ selectedStation }) => {
                 <div style={{ textAlign: 'center', padding: '32px 0' }}>
                   <div style={{ fontSize: '48px', marginBottom: '16px' }}>✅</div>
                   <h3 style={{ fontSize: '20px', fontWeight: '600', color: '#166534', marginBottom: '8px' }}>
-                    Reserva Confirmada!
+                    Pedido de Reserva enviada!
                   </h3>
                   <p style={{ color: '#6b7280', margin: 0 }}>
-                    Sua reserva foi salva com sucesso.
+                    Seu pedido de  reserva foi efetuada com sucesso.
+                  
                   </p>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+      {/* MODAL DE ERRO  */}
+      {isErrorModalOpen && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1001,
+        }}>
+          <div className="slide-in" style={{
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            maxWidth: '400px',
+            width: '90%',
+            overflow: 'hidden'
+          }}>
+            
+            {/* Header do modal de erro */}
+            <div style={{
+              background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+              color: 'white',
+              padding: '20px',
+              textAlign: 'center'
+            }}>
+              <div className="shake" style={{
+                fontSize: '48px',
+                marginBottom: '12px'
+              }}>
+                ⚠️
+              </div>
+              <h3 style={{ 
+                margin: 0, 
+                fontSize: '20px', 
+                fontWeight: '600',
+                textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+              }}>
+                Erro na Reserva
+              </h3>
+            </div>
+
+            {/* Conteúdo do modal */}
+            <div style={{ padding: '24px', textAlign: 'center' }}>
+              <p style={{ 
+                color: '#6b7280', 
+                margin: '0 0 24px 0',
+                fontSize: '16px',
+                lineHeight: '1.5'
+              }}>
+                {errorMessage}
+              </p>
+              
+              <div style={{
+                backgroundColor: '#fef2f2',
+                border: '1px solid #fecaca',
+                borderRadius: '8px',
+                padding: '12px',
+                marginBottom: '24px'
+              }}>
+                <p style={{
+                  color: '#dc2626',
+                  fontSize: '14px',
+                  margin: 0,
+                  fontWeight: '500'
+                }}>
+                  💡 Sugestões:
+                </p>
+                <ul style={{
+                  color: '#7f1d1d',
+                  fontSize: '13px',
+                  margin: '8px 0 0 0',
+                  paddingLeft: '20px',
+                  textAlign: 'left'
+                }}>
+                  <li>Verifique sua conexão com a internet</li>
+                  <li>Tente selecionar outro horário</li>
+                  <li>Aguarde alguns minutos e tente novamente</li>
+                </ul>
+              </div>
+
+              {/* Botões de ação */}
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button
+                  onClick={() => setIsErrorModalOpen(false)}
+                  style={{
+                    flex: 1,
+                    padding: '12px 20px',
+                    border: '2px solid #e5e7eb',
+                    backgroundColor: 'white',
+                    color: '#6b7280',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  Fechar
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setIsErrorModalOpen(false);
+                    confirmarReserva();
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: '12px 20px',
+                    backgroundColor: '#ef4444',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  Tentar Novamente
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -650,7 +872,13 @@ const Mapa = () => {
   }
 
   return (
-    <Box sx={{ display: 'flex', height: '82vh' }}>
+
+     <Box sx={{ 
+           minHeight: '100vh',
+           display:"flex"
+         }}>
+
+
       {/* Mapa - 80% */}
       <Box sx={{ flex: 4, position: 'relative' }}>
         <APIProvider apiKey={'AIzaSyDqX72bHbKlVnFwaOiW_0Bmx09_1ep-8W4'}>
@@ -859,7 +1087,13 @@ const Mapa = () => {
           </Box>
         )}
       </CustomModal>
+    
+
+
     </Box>
+
+
+
   );
 };
 

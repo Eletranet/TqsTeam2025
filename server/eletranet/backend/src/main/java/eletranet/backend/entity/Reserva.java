@@ -26,18 +26,8 @@ public class Reserva {
     private String stationName;
     private Long stationId;
     private String horaReserva;
-
-    public Reserva(Long idUsuario,String nameCliente,ReservaStatus statusreserva  , String dataReserva, Double valorReserva, String stationName, Long stationId,String horaReserva) {
-        this.idUsuario = idUsuario;
-        this.nameCliente = nameCliente;
-        this.statusReserva =statusreserva;
-        this.dataReserva = dataReserva;
-        this.valorReserva = valorReserva;
-        this.stationName = stationName;
-        this.stationId = stationId;
-        this.horaReserva=horaReserva;
-
-    }
+    private String duracaoReserva;
+    private String tipoCaregamento;
 
     @Override
     public String toString() {
@@ -49,9 +39,24 @@ public class Reserva {
                 ", dataReserva='" + dataReserva + '\'' +
                 ", valorReserva=" + valorReserva +
                 ", stationName='" + stationName + '\'' +
-                ", stationId=" + stationId +'\''+
-                ", horaReserva=" + horaReserva   +
-
+                ", stationId=" + stationId +
+                ", horaReserva='" + horaReserva + '\'' +
+                ", duracaoReserva='" + duracaoReserva + '\'' +
+                ", tipoCaregamento='" + tipoCaregamento + '\'' +
                 '}';
     }
+
+    public Reserva(Long idUsuario, ReservaStatus statusreserva  , String dataReserva, Double valorReserva, String stationName, Long stationId, String horaReserva, String duracaoReserva, String tipoCaregamento) {
+        this.idUsuario = idUsuario;
+        this.statusReserva =statusreserva;
+        this.dataReserva = dataReserva;
+        this.valorReserva = valorReserva;
+        this.stationName = stationName;
+        this.stationId = stationId;
+        this.horaReserva=horaReserva;
+        this.duracaoReserva=duracaoReserva;
+        this.tipoCaregamento=tipoCaregamento;
+
+    }
+
 }

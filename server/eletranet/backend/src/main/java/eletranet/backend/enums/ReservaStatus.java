@@ -1,7 +1,8 @@
 package eletranet.backend.enums;
 
 public enum ReservaStatus {
-    CANCELADO,
-    ACTIVO,
-    TERMINADO,
+    CANCELADA,
+    PENDENTE,
+    CONFIRMADA,
+    CONCLUIDA
 }

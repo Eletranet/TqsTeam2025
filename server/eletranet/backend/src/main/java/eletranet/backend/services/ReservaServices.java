@@ -10,9 +10,8 @@ public interface ReservaServices {
     List<Reserva> findAll();
     List<Reserva> findByClienteId(Long id);
     Reserva save(Reserva reserva);
-    boolean cancelarReserva(Long idReserva);
     List<Reserva> findByIdUsuario(Long idCliente);
+    boolean existeConflitoDeReservaPendente(Reserva reserva);
 
-    boolean isReservaValid(Reserva reserva,PersonServices personServices);
-
+    boolean manageReserva(Long idReserva, String operation);
 }

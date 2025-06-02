@@ -27,83 +27,54 @@ import {
 } from '@mui/icons-material';
 import { getMyReservas } from "../services/MainServices";
 import { useNavigate } from 'react-router';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function MinhasReservas() {
   const [filter, setFilter] = useState('todas');
   const [searchTerm, setSearchTerm] = useState('');
+  const [reservaData, setReservaData] = useState([]);
+  const navigate = useNavigate();
 
-  const reservations = [
-    {
-      id: 1,
-      station: "Estação Central Aveiro",
-      address: "Rua das Energias, 101, Aveiro",
-      date: "31 Mai 2025",
-      time: "14:30",
-        duration: "1h 30min",
-        type: "Rápido",
-        status: "Confirmada",
-        price: "6.90",
-      color: "#2196F3"
-    },
-    {
-      id: 2,
-      station: "Posto Glicinias Plaza",
-      address: "Centro Comercial Glicinias, Aveiro",
-      date: "02 Jun 2025",
-      time: "10:00",
-      duration: "2h 00min",
-      type: "Normal",
-      status: "Pendente",
-      price: "4.50",
-      color: "#FF9800"
-    },
-    {
-      id: 3,
-      station: "EDP Universidade",
-      address: "Campus Universitário, Aveiro",
-      date: "05 Jun 2025",
-      time: "16:45",
-      duration: "1h 15min",
-      type: "Super Rápido",
-      status: "Confirmada",
-      price: "8.20",
-      color: "#4CAF50"
-    },
-    {
-      id: 4,
-      station: "Carregamento Fórum",
-      address: "Fórum Aveiro, Rua Batalhão Caçadores",
-      date: "28 Mai 2025",
-      time: "09:15",
-      duration: "45min",
-      type: "Rápido",
-      status: "Concluída",
-      price: "3.80",
-      color: "#607D8B"
-    },
-    {
-      id: 5,
-      station: "Posto Continente",
-      address: "Continente Aveiro Sul",
-      date: "08 Jun 2025",
-      time: "12:30",
-      duration: "1h 45min",
-      type: "Normal",
-      status: "Cancelada",
-      price: "5.10",
-      color: "#F44336"
+  useEffect(()=>{
+    const token = localStorage.getItem("TokenEletraNet")
+    if (!token){
+      navigate("/loguin");
     }
-  ];
+  },[navigate])
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+
+      try {
+
+        const data = await getMyReservas();
+
+        if (data) {
+
+          setReservaData(data);
+
+        }
+      } catch (error) {
+        console.error("Erro ao carregar reservas:", error);
+      }
+    };
+
+    fetchData();
+
+
+  }, []);
+
+
 
   const getStatusConfig = (status: string) => {
     const configs = {
-      'Confirmada': { color: '#4CAF50', icon: '✓' },
-      'Pendente': { color: '#FF9800', icon: '⏳' },
-      'Concluída': { color: '#2196F3', icon: '✅' },
-      'Cancelada': { color: '#F44336', icon: '❌' }
+      'CONFIRMADA': { color: '#4CAF50', icon: '✓' },
+      'PENDENTE': { color: '#FF9800', icon: '⏳' },
+      'CONCLUIDA': { color: '#2196F3', icon: '✅' },
+      'CANCELADA': { color: '#F44336', icon: '❌' }
     };
-    return configs[status] || configs['Pendente'];
+    return configs[status] || configs['PENDENTE'];
   };
 
   const getTypeConfig = (type: string) => {
@@ -115,38 +86,35 @@ export default function MinhasReservas() {
     return configs[type] || configs['Normal'];
   };
 
-  const filteredReservations = reservations
-    .filter(r => filter === 'todas' || r.status.toLowerCase() === filter)
+  const filteredReservations = reservaData
+    .filter(r => filter === 'todas' || r.statusReserva.toLowerCase() === filter)
     .filter(r => 
-      r.station.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.address.toLowerCase().includes(searchTerm.toLowerCase())
+      r.stationName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      r.tipoCaregamento.toLowerCase().includes(searchTerm.toLowerCase()) 
+   
+
     );
 
   return (
     <Container>
 <Box sx={{ 
       minHeight: '100vh',
-      p: 3
+      p: 5
     }}>
       <Container maxWidth="xl">
-        {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 4 }}>
-          <Box>
-            <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#1e293b', mb: 1 }}>
-              Minhas Reservas
-            </Typography>
-           
-          </Box>
 
-        </Box>
 
         {/* Search and Filters */}
-        <Paper sx={{ p: 3, mb: 3, bgcolor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}>
+        <Paper sx={{ p: 3, mb: 3, bgcolor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)',                    width:"97%"
+ }}>
           {/* Search Bar */}
           <Box sx={{ mb: 3 }}>
+            <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#1e293b', mb: 1 }}>
+              Minhas Reservas
+            </Typography>
             <TextField
               fullWidth
-              placeholder="Pesquisar por nome do posto ou endereço..."
+              placeholder="Pesquisar por nome do posto ou velocidade de carrgamento..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               InputProps={{
@@ -190,7 +158,7 @@ export default function MinhasReservas() {
               </Typography>
             </Stack>
             <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
-              {['todas', 'confirmada', 'pendente', 'concluída', 'cancelada'].map((status) => (
+              {['todas', 'confirmada', 'pendente', 'concluida', 'cancelada'].map((status) => (
                 <Chip
                   key={status}
                   label={status.charAt(0).toUpperCase() + status.slice(1)}
@@ -245,12 +213,12 @@ export default function MinhasReservas() {
             </Paper>
           ) : (
             filteredReservations.map((reservation) => {
-              const statusConfig = getStatusConfig(reservation.status);
-              const typeConfig = getTypeConfig(reservation.type);
+              const statusConfig = getStatusConfig(reservation.statusReserva);
+              const typeConfig = getTypeConfig(reservation.tipoCaregamento);
               
               return (
                 <Card 
-                  key={reservation.id} 
+                  key={reservation.idReserva} 
                   sx={{ 
                     bgcolor: 'rgba(255,255,255,0.95)',
                     backdropFilter: 'blur(10px)',
@@ -258,7 +226,8 @@ export default function MinhasReservas() {
                       transform: 'scale(1.01)', 
                       boxShadow: '0 8px 25px #222' ,
                     },
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.3s ease',
+                    width:"102%"
                   }}
                 >
                   <CardContent sx={{ p: 0 }}>
@@ -268,7 +237,7 @@ export default function MinhasReservas() {
                         <Box sx={{ p: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
                           <Box sx={{
                             p: 1.5,
-                            bgcolor: reservation.color,
+                            bgcolor:statusConfig.color,
                             borderRadius: 2,
                             color: 'white',
                             display: 'flex',
@@ -279,12 +248,12 @@ export default function MinhasReservas() {
                           </Box>
                           <Box sx={{ flex: 1 }}>
                             <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#1e293b', mb: 0.5 }}>
-                              {reservation.station}
+                              {reservation.stationName}
                             </Typography>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                               <MapPinIcon sx={{ fontSize: 16, color: '#64748b' }} />
                               <Typography variant="body2" sx={{ color: '#64748b' }}>
-                                {reservation.address}
+                                {reservation.stationName}
                               </Typography>
                             </Box>
                           </Box>
@@ -300,10 +269,10 @@ export default function MinhasReservas() {
                             </Typography>
                           </Box>
                           <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#1e293b' }}>
-                            {reservation.date}
+                            {reservation.dataReserva}
                           </Typography>
                           <Typography variant="body2" sx={{ color: '#64748b' }}>
-                            {reservation.time}
+                            {reservation.horaReserva}
                           </Typography>
                         </Box>
                       </Grid>
@@ -317,7 +286,7 @@ export default function MinhasReservas() {
                             </Typography>
                           </Box>
                           <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#1e293b' }}>
-                            {reservation.duration}
+                            {reservation.duracaoReserva}H
                           </Typography>
                         </Box>
                       </Grid>
@@ -328,7 +297,7 @@ export default function MinhasReservas() {
                             Tipo
                           </Typography>
                           <Chip
-                            label={`${typeConfig.icon} ${reservation.type}`}
+                            label={`${typeConfig.icon} ${reservation.tipoCaregamento}`}
                             sx={{ 
                               bgcolor: typeConfig.color, 
                               color: 'white',
@@ -344,7 +313,7 @@ export default function MinhasReservas() {
                             Status
                           </Typography>
                           <Chip
-                            label={`${statusConfig.icon} ${reservation.status}`}
+                            label={`${statusConfig.icon} ${reservation.statusReserva}`}
                             sx={{ 
                               bgcolor: statusConfig.color, 
                               color: 'white',
@@ -360,21 +329,24 @@ export default function MinhasReservas() {
                             Preço
                           </Typography>
                           <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#1e293b' }}>
-                            €{reservation.price}
+                            €{reservation.valorReserva}
                           </Typography>
                         </Box>
                       </Grid>
 
                       <Grid item xs={12} md={1}>
                         <Box sx={{ display: 'flex', gap: 1, p: 2, justifyContent: 'center' }}>
-                          {reservation.status !== 'Concluída' && reservation.status !== 'Cancelada' && (
+                          {reservation.statusReserva.toLowerCase()  !== 'concluida' && reservation.statusReserva.toLowerCase()  !== 'cancelada' && (
                             <IconButton 
                               size="small"
                               sx={{ 
                                 border: '1px solid #fecaca',
                                 color: '#dc2626',
                                 '&:hover': { bgcolor: '#fef2f2' }
+
                               }}
+                              onClick={()=>alert("cancelar Reserva")}
+
                             >
                               <XIcon fontSize="small" />
                             </IconButton>
@@ -390,9 +362,7 @@ export default function MinhasReservas() {
                           >
                             <NavigationIcon  fontSize="small" />
                           </IconButton>
-                          <IconButton size="small">
-                            <MoreHorizontalIcon fontSize="small" />
-                          </IconButton>
+            
                         </Box>
                       </Grid>
                     </Grid>

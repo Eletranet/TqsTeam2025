@@ -36,19 +36,16 @@ function Home(){
 
     return(
 
-     <div>
-      <button onClick={abrirModal}>Abrir Modal</button>
+    <Container>
+     <Box sx={{ 
+           minHeight: '100vh',
+           p: 5
+         }}>
 
-      <CustomModal
-        open={open}
-        onClose={fecharModal}
-        title="Título Personalizado"
-        description="Este é o conteúdo do modal"
-      >
-        <p>Conteúdo adicional pode ir aqui.</p>
-        <button onClick={fecharModal}>Fechar</button>
-      </CustomModal>
-    </div>
+
+    </Box>
+    
+    </Container>
     )
 }
 export default Home

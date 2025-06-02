@@ -70,9 +70,8 @@ export const getMyReservas = async () => {
 
 
 export const fazerReserva = async (reservaData) => {
-  alert(reservaData.hora)
   
-  const url=`http://localhost:8080/reserva/fazerReserva?stationID=${reservaData.selectedStationID}&dataReserva=${reservaData.data}&horaReserva=${reservaData.hora}`
+  const url=`http://localhost:8080/reserva/fazerReserva?stationID=${reservaData.selectedStationID}&dataReserva=${reservaData.data}&horaReserva=${reservaData.hora}&duracaoReserva=${reservaData.duracao}&tipoCaregamento=${reservaData.tipoCaregamento}`
 
   try {
     const token = localStorage.getItem("TokenEletraNet") ? localStorage.getItem("TokenEletraNet"): undefined;
@@ -88,8 +87,7 @@ export const fazerReserva = async (reservaData) => {
       return result.data; 
     }
   } catch (error) {
-    alert("Error")
     console.error("Erro ao fazer reserva:", error);
-    throw error;
+    return null;
   }
 };
