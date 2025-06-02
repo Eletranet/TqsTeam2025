@@ -50,7 +50,7 @@ public class Reserva {
                 ", valorReserva=" + valorReserva +
                 ", stationName='" + stationName + '\'' +
                 ", stationId=" + stationId +'\''+
-                ", horaReserva=" + horaReserva +
+                ", horaReserva=" + horaReserva   +
 
                 '}';
     }

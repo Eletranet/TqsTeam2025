@@ -29,7 +29,7 @@ public class ReservaControler {
     ReservaServices reservaServices;
     PersonServices personServices;
     StationServices stationServices;
-    public ReservaControler(ReservaServices reservaServices , PersonServices personServices,StationServices stationServices) {
+    public ReservaControler(ReservaServices reservaServices , PersonServices personServices,StationServices stationServices ) {
         this.reservaServices= reservaServices;
         this.personServices= personServices;
         this.stationServices= stationServices;
@@ -67,6 +67,8 @@ public class ReservaControler {
 
 
 
+    // adicionar param duracao e param tipo de carga escolhida(rapido ,super rapido normal), preco varia com tipo de carga mas rapido mas caro
+
     @PostMapping("/fazerReserva")
     public ResponseEntity<Reserva> fazerReserva(@RequestParam String dataReserva, @RequestParam Long stationID,
                                                 @RequestParam String horaReserva
@@ -85,6 +87,7 @@ public class ReservaControler {
         }
 
         /// ver se ja existe resevara para o posto no mesmo dia e horario
+
         Reserva reserva = new Reserva(person.getId(),person.getUsername(),ReservaStatus.ACTIVO,dataReserva,station.get().getPricePerHour(), station.get().getName(),stationID,horaReserva);
 
         Boolean isValid=reservaServices.isReservaValid(reserva,personServices);
