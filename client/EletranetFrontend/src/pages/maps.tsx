@@ -170,13 +170,45 @@ const ReservaCalendario = ({ selectedStation }) => {
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
+          height:40,
+          marginLeft:-18,
           gap: '8px'
         }}
       >
         📅 Reservar
-      </button> :<></>
-      }
+      </button> :<>
+      <button
+      style={{cursor:"not-allowed",
+          padding: '10px 20px',
+          backgroundColor:'transparent',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          display: 'flex',
+          alignItems: 'center',
+          height:40,
+          
+          marginLeft:-18,
+          gap: '8px'}}
+      >
+        📅 Reservar
 
+
+      </button>
+      
+      
+      </>
+      }
+      <div style={{ 
+      minHeight: '100vh', 
+      padding: '20px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      
+    
 
       {isCalendarOpen && (
         <div style={{
@@ -189,26 +221,32 @@ const ReservaCalendario = ({ selectedStation }) => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          padding: '20px',
+          overflowY: 'auto',
           zIndex: 1000
         }}>
           <div style={{
             backgroundColor: 'white',
             borderRadius: '12px',
             boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-            maxWidth: '400px',
-            width: '90%',
-            overflow: 'hidden'
+            maxWidth: '800px',
+            width: '95%',
+            maxHeight: '90vh',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column'
           }}>
             
+            {/* Header */}
             <div style={{
               backgroundColor: '#222',
               color: 'white',
-              padding: '16px',
+              padding: '12px 16px',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center'
             }}>
-              <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>
+              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
                 📅 Selecionar Data de Reserva
               </h3>
               <button
@@ -217,298 +255,353 @@ const ReservaCalendario = ({ selectedStation }) => {
                   background: 'rgba(255,255,255,0.2)',
                   border: 'none',
                   color: 'white',
-                  padding: '4px',
+                  padding: '4px 8px',
                   borderRadius: '4px',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  fontSize: '14px'
                 }}
               >
                 ✕
               </button>
             </div>
 
-            <div style={{ padding: '24px' }}>
+            <div style={{ 
+              padding: '16px', 
+              overflowY: 'auto',
+              flex: 1
+            }}>
               {!isReserved ? (
-                <>
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: '16px'
+                <div style={{
+                  display: 'flex',
+                  gap: '20px',
+                  alignItems: 'flex-start'
+                }}>
+                  
+                  {/* Calendário - Lado Esquerdo */}
+                  <div style={{ 
+                    flex: '1',
+                    minWidth: '280px'
                   }}>
-                    <button
-                      onClick={() => navigateMonth('prev')}
-                      style={{
-                        padding: '8px',
-                        background: 'none',
-                        border: '1px solid #ddd',
-                        borderRadius: '8px',
-                        cursor: 'pointer'
-                      }}
-                      disabled={displayYear === currentYear && displayMonth === currentMonth}
-                    >
-                      ←
-                    </button>
-                    <h4 style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>
-                      {monthNames[displayMonth]} {displayYear}
-                    </h4>
-                    <button
-                      onClick={() => navigateMonth('next')}
-                      style={{
-                        padding: '8px',
-                        background: 'none',
-                        border: '1px solid #ddd',
-                        borderRadius: '8px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      →
-                    </button>
+                    {/* Navegação do mês */}
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '12px'
+                    }}>
+                      <button
+                        onClick={() => navigateMonth('prev')}
+                        style={{
+                          padding: '6px 10px',
+                          background: 'none',
+                          border: '1px solid #ddd',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '14px'
+                        }}
+                        disabled={displayYear === currentYear && displayMonth === currentMonth}
+                      >
+                        ←
+                      </button>
+                      <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
+                        {monthNames[displayMonth]} {displayYear}
+                      </h4>
+                      <button
+                        onClick={() => navigateMonth('next')}
+                        style={{
+                          padding: '6px 10px',
+                          background: 'none',
+                          border: '1px solid #ddd',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '14px'
+                        }}
+                      >
+                        →
+                      </button>
+                    </div>
+
+                    {/* Dias da semana */}
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(7, 1fr)',
+                      gap: '2px',
+                      marginBottom: '4px'
+                    }}>
+                      {dayNames.map(day => (
+                        <div key={day} style={{
+                          textAlign: 'center',
+                          fontSize: '11px',
+                          fontWeight: '500',
+                          color: '#666',
+                          padding: '4px 0'
+                        }}>
+                          {day}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Grid do calendário */}
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(7, 1fr)',
+                      gap: '2px'
+                    }}>
+                      {getDaysInMonth().map((day, index) => (
+                        <div key={index} style={{ aspectRatio: '1' }}>
+                          {day && (
+                            <button
+                              onClick={() => selectDate(day)}
+                              disabled={!isDateValid(day)}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                borderRadius: '6px',
+                                fontSize: '12px',
+                                fontWeight: '500',
+                                border: 'none',
+                                cursor: isDateValid(day) ? 'pointer' : 'not-allowed',
+                                backgroundColor: !isDateValid(day)
+                                  ? '#f3f4f6'
+                                  : selectedDate && selectedDate.getDate() === day && selectedDate.getMonth() === displayMonth
+                                  ? '#059669'
+                                  : 'transparent',
+                                color: !isDateValid(day)
+                                  ? '#d1d5db'
+                                  : selectedDate && selectedDate.getDate() === day && selectedDate.getMonth() === displayMonth
+                                  ? 'white'
+                                  : '#374151'
+                              }}
+                              onMouseOver={(e) => {
+                                if (isDateValid(day) && !(selectedDate && selectedDate.getDate() === day)) {
+                                  e.target.style.backgroundColor = '#f0f9ff';
+                                }
+                              }}
+                              onMouseOut={(e) => {
+                                if (isDateValid(day) && !(selectedDate && selectedDate.getDate() === day)) {
+                                  e.target.style.backgroundColor = 'transparent';
+                                }
+                              }}
+                            >
+                              {day}
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(7, 1fr)',
-                    gap: '4px',
-                    marginBottom: '8px'
+                  {/* Informações e Seleções - Lado Direito */}
+                  <div style={{ 
+                    flex: '1',
+                    minWidth: '280px'
                   }}>
-                    {dayNames.map(day => (
-                      <div key={day} style={{
-                        textAlign: 'center',
-                        fontSize: '12px',
-                        fontWeight: '500',
-                        color: '#666',
-                        padding: '8px 0'
-                      }}>
-                        {day}
-                      </div>
-                    ))}
-                  </div>
+                    {selectedDate && (
+                      <>
+                        {/* Resumo da data selecionada */}
+                        <div style={{
+                          backgroundColor: '#f0f9ff',
+                          padding: '12px',
+                          borderRadius: '8px',
+                          marginBottom: '16px'
+                        }}>
+                          <p style={{ margin: 0, fontSize: '13px', color: '#1e40af', fontWeight: '600' }}>
+                            📅 {selectedDate.toLocaleDateString('pt-PT', {
+                              weekday: 'short',
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric'
+                            })}
+                          </p>
+                        </div>
 
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(7, 1fr)',
-                    gap: '4px',
-                    marginBottom: '24px'
-                  }}>
-                    {getDaysInMonth().map((day, index) => (
-                      <div key={index} style={{ aspectRatio: '1' }}>
-                        {day && (
-                          <button
-                            onClick={() => selectDate(day)}
-                            disabled={!isDateValid(day)}
+                        {/* Seleção de horário */}
+                        <div style={{ marginBottom: '12px' }}>
+                          <label style={{
+                            display: 'block',
+                            fontSize: '13px',
+                            fontWeight: '500',
+                            color: '#374151',
+                            marginBottom: '6px'
+                          }}>
+                            🕒 Horário:
+                          </label>
+                          <select
+                            value={selectedHour}
+                            onChange={(e) => setSelectedHour(e.target.value)}
                             style={{
                               width: '100%',
-                              height: '100%',
-                              borderRadius: '8px',
-                              fontSize: '14px',
-                              fontWeight: '500',
-                              border: 'none',
-                              cursor: isDateValid(day) ? 'pointer' : 'not-allowed',
-                              backgroundColor: !isDateValid(day)
-                                ? '#f3f4f6'
-                                : selectedDate && selectedDate.getDate() === day && selectedDate.getMonth() === displayMonth
-                                ? 'green'
-                                : 'transparent',
-                              color: !isDateValid(day)
-                                ? '#d1d5db'
-                                : selectedDate && selectedDate.getDate() === day && selectedDate.getMonth() === displayMonth
-                                ? 'white'
-                                : '#374151'
-                            }}
-                            onMouseOver={(e) => {
-                              if (isDateValid(day) && !(selectedDate && selectedDate.getDate() === day)) {
-                                e.target.style.backgroundColor = '#f0f9ff';
-                              }
-                            }}
-                            onMouseOut={(e) => {
-                              if (isDateValid(day) && !(selectedDate && selectedDate.getDate() === day)) {
-                                e.target.style.backgroundColor = 'transparent';
-                              }
+                              padding: '8px',
+                              border: '1px solid #d1d5db',
+                              borderRadius: '6px',
+                              fontSize: '13px'
                             }}
                           >
-                            {day}
-                          </button>
+                            <option value="">Escolha um horário</option>
+                            {horariosDisponiveis.map(hora => (
+                              <option key={hora} value={hora}>{hora}</option>
+                            ))}
+                          </select>
+                        </div>
+                        
+                        {/* Seleção de duração */}
+                        <div style={{ marginBottom: '12px' }}>
+                          <label style={{
+                            display: 'block',
+                            fontSize: '13px',
+                            fontWeight: '500',
+                            color: '#374151',
+                            marginBottom: '6px'
+                          }}>
+                            ⏱️ Duração:
+                          </label>
+                          <select
+                            value={selectedDuracao}
+                            onChange={(e) => setSelectedDuracao(e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '8px',
+                              border: '1px solid #d1d5db',
+                              borderRadius: '6px',
+                              fontSize: '13px'
+                            }}
+                          >
+                            <option value="">Escolha uma duração</option>
+                            {duracaoDisponiveis.map(duracao => (
+                              <option key={duracao} value={duracao}>{duracao} hora{duracao > 1 ? 's' : ''}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Seleção de tipo de carregamento */}
+                        <div style={{ marginBottom: '16px' }}>
+                          <label style={{
+                            display: 'block',
+                            fontSize: '13px',
+                            fontWeight: '500',
+                            color: '#374151',
+                            marginBottom: '6px'
+                          }}>
+                            ⚡ Tipo de carregamento:
+                          </label>
+                          <select
+                            value={selectedTipoCaregamento}
+                            onChange={(e) => setSelectedTipoCaregamento(e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '8px',
+                              border: '1px solid #d1d5db',
+                              borderRadius: '6px',
+                              fontSize: '13px'
+                            }}
+                          >
+                            <option value="">Escolha o tipo</option>
+                            {tipoCarregamentoDisponiveis.map(tipo => (
+                              <option key={tipo} value={tipo}>{tipo}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Resumo das seleções */}
+                        {(selectedHour || selectedDuracao || selectedTipoCaregamento) && (
+                          <div style={{
+                            backgroundColor: '#f9fafb',
+                            padding: '12px',
+                            borderRadius: '6px',
+                            marginBottom: '16px',
+                            border: '1px solid #e5e7eb'
+                          }}>
+                            {selectedHour && (
+                              <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#374151' }}>
+                                <strong>Horário:</strong> {selectedHour}
+                              </p>
+                            )}
+                            {selectedDuracao && (
+                              <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#374151' }}>
+                                <strong>Duração:</strong> {selectedDuracao} hora{selectedDuracao > 1 ? 's' : ''}
+                              </p>
+                            )}
+                            {selectedTipoCaregamento && (
+                              <p style={{ margin: '0', fontSize: '12px', color: '#374151' }}>
+                                <strong>Tipo:</strong> {selectedTipoCaregamento}
+                              </p>
+                            )}
+                          </div>
                         )}
-                      </div>
-                    ))}
-                  </div>
+                      </>
+                    )}
 
-                  {selectedDate && (
-                    <div style={{ marginBottom: '24px' }}>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '14px',
-                        fontWeight: '500',
-                        color: '#374151',
-                        marginBottom: '8px'
+                    {!selectedDate && (
+                      <div style={{
+                        textAlign: 'center',
+                        padding: '40px 20px',
+                        color: '#6b7280',
+                        fontSize: '14px'
                       }}>
-                        🕒 Selecionar Horário:
-                      </label>
-                      <select
-                        value={selectedHour}
-                        onChange={(e) => setSelectedHour(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '8px',
-                          border: '1px solid #d1d5db',
-                          borderRadius: '8px',
-                          fontSize: '14px'
-                        }}
-                      >
-                        <option value="">Escolha um horário</option>
-                        {horariosDisponiveis.map(hora => (
-                          <option key={hora} value={hora}>{hora}</option>
-                        ))}
-                      </select>
-                      
-                      <label style={{
-                        display: 'block',
-                        fontSize: '14px',
-                        fontWeight: '500',
-                        color: '#374151',
-                        marginBottom: '8px',
-                        marginTop:"2%"
-                        
-                     }}>
-                        🕒 Selecionar Duracao:
-                      </label>
-                      <select
-                        value={selectedDuracao}
-                        onChange={(e) => setSelectedDuracao(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '8px',
-                          border: '1px solid #d1d5db',
-                          borderRadius: '8px',
-                          fontSize: '14px'
-                        }}
-                      >
-                        <option value="">Escolha uma Duracao</option>
-                        {duracaoDisponiveis.map(duracao => (
-                          <option key={duracao} value={duracao}>{duracao}</option>
-                        ))}
-                      </select>
-
-                   <label style={{
-                        display: 'block',
-                        fontSize: '14px',
-                        fontWeight: '500',
-                        color: '#374151',
-                        marginBottom: '8px',
-                        marginTop:"2%"
-                        
-                     }}>
-                         Selecionar Tipo de carregamento:
-                      </label>
-                      <select
-                        value={selectedTipoCaregamento}
-                        onChange={(e) => setSelectedTipoCaregamento(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '8px',
-                          border: '1px solid #d1d5db',
-                          borderRadius: '8px',
-                          fontSize: '14px'
-                        }}
-                      >
-                        <option value="">Escolha o tipo de velocidade de carregamento</option>
-                        {tipoCarregamentoDisponiveis.map(tipo => (
-                          <option key={tipo} value={tipo}>{tipo}</option>
-                        ))}
-                      </select>
-
-
-
-
-                      
-                    </div>
-                  )}
-
-                  {selectedDate && (
-                    <div style={{
-                      backgroundColor: '#f0f9ff',
-                      padding: '16px',
-                      borderRadius: '8px',
-                      marginBottom: '16px'
-                    }}>
-                      <p style={{ margin: 0, fontSize: '14px', color: '#1e40af' }}>
-                        <strong>Data selecionada:</strong> {selectedDate.toLocaleDateString('pt-PT', {
-                          weekday: 'long',
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
-                      </p>
-                      {selectedHour && (
-                        <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#1e40af' }}>
-                          <strong>Horário:</strong> {selectedHour}
-                        </p>
-                      )}
-
-
-                       
-                      {selectedDuracao && (
-                        <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#1e40af' }}>
-                          <strong>Duração:</strong> {selectedDuracao} hora/s
-                        </p>
-                      )}
-                       {selectedTipoCaregamento && (
-                        <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#1e40af' }}>
-                          <strong>Tipo carregamento:</strong> {selectedTipoCaregamento}
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  <div style={{ display: 'flex', gap: '12px' }}>
-                    <button
-                      onClick={() => setIsCalendarOpen(false)}
-                      style={{
-                        flex: 1,
-                        padding: '8px 16px',
-                        border: '1px solid #d1d5db',
-                        backgroundColor: 'white',
-                        color: '#374151',
-                        borderRadius: '8px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      onClick={confirmarReserva}
-                      disabled={!selectedDate || !selectedHour  || !selectedDuracao || !selectedTipoCaregamento}
-                      style={{
-                        flex: 1,
-                        padding: '8px 16px',
-                        backgroundColor: selectedDate && selectedHour && selectedDuracao && selectedTipoCaregamento? 'green' : '#d1d5db',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '8px',
-                        cursor: selectedDate && selectedHour && selectedDuracao && selectedTipoCaregamento? 'pointer' : 'not-allowed'
-                      }}
-                    >
-                      Confirmar Reserva
-                    </button>
+                        Selecione uma data no calendário para continuar
+                      </div>
+                    )}
                   </div>
-                </>
+                </div>
               ) : (
                 <div style={{ textAlign: 'center', padding: '32px 0' }}>
                   <div style={{ fontSize: '48px', marginBottom: '16px' }}>✅</div>
-                  <h3 style={{ fontSize: '20px', fontWeight: '600', color: '#166534', marginBottom: '8px' }}>
+                  <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#166534', marginBottom: '8px' }}>
                     Pedido de Reserva enviada!
                   </h3>
-                  <p style={{ color: '#6b7280', margin: 0 }}>
-                    Seu pedido de  reserva foi efetuada com sucesso.
-                  
+                  <p style={{ color: '#6b7280', margin: 0, fontSize: '14px' }}>
+                    Seu pedido de reserva foi efetuada com sucesso.
                   </p>
                 </div>
               )}
             </div>
+
+            {/* Footer com botões */}
+            {!isReserved && (
+              <div style={{
+                padding: '12px 16px',
+                borderTop: '1px solid #e5e7eb',
+                display: 'flex',
+                gap: '8px'
+              }}>
+                <button
+                  onClick={() => setIsCalendarOpen(false)}
+                  style={{
+                    flex: 1,
+                    padding: '8px 16px',
+                    border: '1px solid #d1d5db',
+                    backgroundColor: 'white',
+                    color: '#374151',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px'
+                  }}
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={confirmarReserva}
+                  disabled={!selectedDate || !selectedHour || !selectedDuracao || !selectedTipoCaregamento}
+                  style={{
+                    flex: 1,
+                    padding: '8px 16px',
+                    backgroundColor: selectedDate && selectedHour && selectedDuracao && selectedTipoCaregamento ? '#059669' : '#d1d5db',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: selectedDate && selectedHour && selectedDuracao && selectedTipoCaregamento ? 'pointer' : 'not-allowed',
+                    fontSize: '14px'
+                  }}
+                >
+                  Confirmar Reserva
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
-      {/* MODAL DE ERRO  */}
+    </div>
+
       {isErrorModalOpen && (
         <div style={{
           position: 'fixed',
@@ -1055,7 +1148,7 @@ const Mapa = () => {
 
 
             
-            <Box sx={{ display: 'flex', gap: 3,marginTop:"2%",marginLeft:"-3%", alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', gap:4,marginTop:2}}>
               <ReservaCalendario selectedStation={selectedStation}/>
               <button 
                 onClick={fecharModal}
@@ -1065,7 +1158,9 @@ const Mapa = () => {
                   color: 'white',
                   border: 'none',
                   borderRadius: '4px',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  height:40
+
                 }}
               >
                 Fechar
@@ -1077,8 +1172,12 @@ const Mapa = () => {
                   backgroundColor: 'red',
                   color: 'white',
                   border: 'none',
+                  cursor: 'pointer',
+                  height:40,
                   borderRadius: '4px',
-                  cursor: 'pointer'
+
+        
+                  
                 }}
               >
                 Ver Rotas
