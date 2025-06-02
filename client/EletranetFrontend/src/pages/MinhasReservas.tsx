@@ -25,7 +25,7 @@ import {
   MoreHoriz as MoreHorizontalIcon,
   Search as SearchIcon
 } from '@mui/icons-material';
-import { getMyReservas } from "../services/MainServices";
+import { getMyReservas,autualizarReserva } from "../services/MainServices";
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from "react";
 
@@ -345,7 +345,7 @@ export default function MinhasReservas() {
                                 '&:hover': { bgcolor: '#fef2f2' }
 
                               }}
-                              onClick={()=>alert("cancelar Reserva")}
+                              onClick={()=>autualizarReserva(reservation.idReserva,"CANCELAR")}
 
                             >
                               <XIcon fontSize="small" />

@@ -91,3 +91,28 @@ export const fazerReserva = async (reservaData) => {
     return null;
   }
 };
+
+export const autualizarReserva = async (idReserva,operation) => {
+  
+  const url=`http://localhost:8080/reserva/manageReserva?idReserva=${idReserva}&operation=${operation}`
+
+  try {
+    const token = localStorage.getItem("TokenEletraNet") ? localStorage.getItem("TokenEletraNet"): undefined;
+    if (token == undefined) {return}
+    const result = await axios.put(url, {},{
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+    });
+
+    
+    if (result.status === 200) {
+      window.location.reload()
+    }
+  } catch (error) {
+    alert("Erro ao autualizar reserva")
+    console.error("Erro ao atualizar reserva:", error);
+
+    return null;
+  }
+};
