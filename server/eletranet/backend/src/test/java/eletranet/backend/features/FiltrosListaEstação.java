@@ -96,7 +96,7 @@ public class FiltrosListaEstação {
                 By.xpath(labelXpath)
         ));
 
-        if (!label.isEnabled()) {
+        if (!label.isSelected()) {
             label.click();
         }
     }
@@ -110,7 +110,7 @@ public class FiltrosListaEstação {
                 By.xpath(labelXpath)
         ));
 
-        if (label.isEnabled()) {
+        if (label.isSelected()) {
             label.click();
         }
     }
@@ -143,7 +143,7 @@ public class FiltrosListaEstação {
                 By.xpath(labelXpath)
         ));
 
-        assertTrue(label.isEnabled());
+        assertTrue(label.isSelected());
     }
 
 
@@ -156,7 +156,7 @@ public class FiltrosListaEstação {
                 By.xpath(labelXpath)
         ));
 
-        if (!label.isEnabled()) {
+        if (!label.isSelected()) {
             label.click();
         }
     }
