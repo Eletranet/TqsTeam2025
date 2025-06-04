@@ -36,7 +36,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images:  ${{ secrets.DOCKER_USERNAME }}/eletranet-backend
+          images:  apg2000/eletranet-backend
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -66,7 +66,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images:  ${{ secrets.DOCKER_USERNAME }}/eletranet-frontend
+          images:  apg2000/eletranet-frontend
 
       - name: Build and push Docker image
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
@@ -74,7 +74,7 @@ jobs:
           context: ./client/EletranetFrontend
           file: ./client/EletranetFrontend/Dockerfile
           push: true
-          tags:  ${{ secrets.DOCKER_USERNAME }}/eletranet-frontend:latest
+          tags:  apg2000/eletranet-frontend:latest
           labels: ${{ steps.meta.outputs.labels }}
 
 
