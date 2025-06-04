@@ -84,7 +84,7 @@ public class ReservaControler {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        /// ver se ja existe resevara para o posto no mesmo dia e horario
+        // ver se ja existe resevara para o posto no mesmo dia e horario
 
         Reserva reserva = new Reserva(person.getId(),ReservaStatus.PENDENTE,dataReserva,station.get().getPricePerHour(), station.get().getName(),stationID,horaReserva);
         reserva.setDuracaoReserva(duracaoReserva);
