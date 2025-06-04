@@ -2,7 +2,7 @@
 services:
 
   user-frontend:
-    image:  ${{ secrets.DOCKER_USERNAME }}/eletranet-frontend:latest
+    image: apg2000/eletranet-frontend:latest
     volumes:
       - /app/node_modules
     networks:
@@ -13,7 +13,7 @@ services:
       - backend
   
   backend:
-    image:  ${{ secrets.DOCKER_USERNAME }}/eletranet-backend:latest
+    image:  apg2000/eletranet-backend:latest
     hostname: "eletranet-backend"
     networks:
       - backend_network
