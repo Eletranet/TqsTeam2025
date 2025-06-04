@@ -1,7 +1,7 @@
 // src/services/LoginService.js
 import axios from 'axios'
 
-const backendAuthApi = "http://localhost:8080/auth"
+const backendAuthApi = "http://deti-tqs-17.ua.pt:8080/auth"
 
 export const LoguinService = async (username, password, navigate) => {
   const finalUrl = `/login?username=${username}&password=${password}`

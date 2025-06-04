@@ -13,9 +13,12 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
 import {APIProvider} from '@vis.gl/react-google-maps';
-
+import CustomModal from "../components/CustomModal"
 function Home(){
+  const [open, setOpen] = React.useState(false);
 
+  const abrirModal = () => setOpen(true);
+  const fecharModal = () => setOpen(false);
 
 
 
@@ -33,9 +36,16 @@ function Home(){
 
     return(
 
-        <>
-        Home Page / tem que estar logado
-        </>
+    <Container>
+     <Box sx={{ 
+           minHeight: '100vh',
+           p: 5
+         }}>
+
+
+    </Box>
+    
+    </Container>
     )
 }
 export default Home

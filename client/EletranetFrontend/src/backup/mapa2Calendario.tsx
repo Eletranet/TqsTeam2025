@@ -27,7 +27,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { useNavigate } from "react-router-dom";
 import CustomModal from "../components/CustomModal"
 
-import {getAllStations} from "../services/MainServices"
+import {getAllStations,fazerReserva} from "../services/MainServices"
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -35,7 +35,388 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import fazerReserva from "../services/MainServices";
+
+const ReservaCalendario = ({ selectedStation }) => {
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [selectedHour, setSelectedHour] = useState('');
+  const [isReserved, setIsReserved] = useState(false);
+
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
+  const currentDay = today.getDate();
+
+  const [displayMonth, setDisplayMonth] = useState(currentMonth);
+  const [displayYear, setDisplayYear] = useState(currentYear);
+
+  const isDateValid = (date) => {
+    const checkDate = new Date(displayYear, displayMonth, date);
+    return checkDate >= new Date(currentYear, currentMonth, currentDay);
+  };
+
+  const getDaysInMonth = () => {
+    const daysInMonth = new Date(displayYear, displayMonth + 1, 0).getDate();
+    const firstDayOfMonth = new Date(displayYear, displayMonth, 1).getDay();
+    const days = [];
+
+    for (let i = 0; i < firstDayOfMonth; i++) {
+      days.push(null);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      days.push(day);
+    }
+
+    return days;
+  };
+
+  const navigateMonth = (direction) => {
+    if (direction === 'prev') {
+      if (displayMonth === 0) {
+        setDisplayMonth(11);
+        setDisplayYear(displayYear - 1);
+      } else {
+        setDisplayMonth(displayMonth - 1);
+      }
+    } else {
+      if (displayMonth === 11) {
+        setDisplayMonth(0);
+        setDisplayYear(displayYear + 1);
+      } else {
+        setDisplayMonth(displayMonth + 1);
+      }
+    }
+  };
+
+  const selectDate = (day) => {
+    if (!isDateValid(day)) return;
+    const selected = new Date(displayYear, displayMonth, day);
+    setSelectedDate(selected);
+  };
+
+  const confirmarReserva = async () => {
+    if (selectedDate && selectedHour) {
+      const reservaData = {
+        data: selectedDate.toLocaleDateString('pt-PT'),
+        hora: selectedHour,
+        timestamp: selectedDate.getTime()
+      };
+
+    const reserva = await fazerReserva(selectedStation.id,reservaData.data)
+
+
+    if(reserva){
+
+      console.log('Reserva confirmada:', reservaData);
+      localStorage.setItem('reservaEstacao', JSON.stringify(reservaData));
+      setIsReserved(true);
+      
+      setTimeout(() => {
+        setIsReserved(false);
+        setIsCalendarOpen(false);
+        setSelectedDate(null);
+        setSelectedHour('');
+      }, 3000);
+
+    }else{
+      alert("Reserva nao efetuada")
+      
+    }
+      
+
+    }
+  };
+
+  const monthNames = [
+    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+  ];
+  
+  const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+  const horariosDisponiveis = [
+    '08:00', '09:00', '10:00', '11:00', '12:00', '13:00',
+    '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'
+  ];
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <button
+        onClick={() => setIsCalendarOpen(true)}
+        style={{
+          padding: '10px 20px',
+          backgroundColor: 'green',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}
+      >
+        📅 Reservar
+      </button>
+
+      {isCalendarOpen && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+            maxWidth: '400px',
+            width: '90%',
+            overflow: 'hidden'
+          }}>
+            
+            <div style={{
+              backgroundColor: 'green',
+              color: 'white',
+              padding: '16px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>
+                📅 Selecionar Data de Reserva
+              </h3>
+              <button
+                onClick={() => setIsCalendarOpen(false)}
+                style={{
+                  background: 'rgba(255,255,255,0.2)',
+                  border: 'none',
+                  color: 'white',
+                  padding: '4px',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ padding: '24px' }}>
+              {!isReserved ? (
+                <>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '16px'
+                  }}>
+                    <button
+                      onClick={() => navigateMonth('prev')}
+                      style={{
+                        padding: '8px',
+                        background: 'none',
+                        border: '1px solid #ddd',
+                        borderRadius: '8px',
+                        cursor: 'pointer'
+                      }}
+                      disabled={displayYear === currentYear && displayMonth === currentMonth}
+                    >
+                      ←
+                    </button>
+                    <h4 style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>
+                      {monthNames[displayMonth]} {displayYear}
+                    </h4>
+                    <button
+                      onClick={() => navigateMonth('next')}
+                      style={{
+                        padding: '8px',
+                        background: 'none',
+                        border: '1px solid #ddd',
+                        borderRadius: '8px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      →
+                    </button>
+                  </div>
+
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(7, 1fr)',
+                    gap: '4px',
+                    marginBottom: '8px'
+                  }}>
+                    {dayNames.map(day => (
+                      <div key={day} style={{
+                        textAlign: 'center',
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        color: '#666',
+                        padding: '8px 0'
+                      }}>
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(7, 1fr)',
+                    gap: '4px',
+                    marginBottom: '24px'
+                  }}>
+                    {getDaysInMonth().map((day, index) => (
+                      <div key={index} style={{ aspectRatio: '1' }}>
+                        {day && (
+                          <button
+                            onClick={() => selectDate(day)}
+                            disabled={!isDateValid(day)}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              borderRadius: '8px',
+                              fontSize: '14px',
+                              fontWeight: '500',
+                              border: 'none',
+                              cursor: isDateValid(day) ? 'pointer' : 'not-allowed',
+                              backgroundColor: !isDateValid(day)
+                                ? '#f3f4f6'
+                                : selectedDate && selectedDate.getDate() === day && selectedDate.getMonth() === displayMonth
+                                ? 'green'
+                                : 'transparent',
+                              color: !isDateValid(day)
+                                ? '#d1d5db'
+                                : selectedDate && selectedDate.getDate() === day && selectedDate.getMonth() === displayMonth
+                                ? 'white'
+                                : '#374151'
+                            }}
+                            onMouseOver={(e) => {
+                              if (isDateValid(day) && !(selectedDate && selectedDate.getDate() === day)) {
+                                e.target.style.backgroundColor = '#f0f9ff';
+                              }
+                            }}
+                            onMouseOut={(e) => {
+                              if (isDateValid(day) && !(selectedDate && selectedDate.getDate() === day)) {
+                                e.target.style.backgroundColor = 'transparent';
+                              }
+                            }}
+                          >
+                            {day}
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {selectedDate && (
+                    <div style={{ marginBottom: '24px' }}>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        color: '#374151',
+                        marginBottom: '8px'
+                      }}>
+                        🕒 Selecionar Horário:
+                      </label>
+                      <select
+                        value={selectedHour}
+                        onChange={(e) => setSelectedHour(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '8px',
+                          border: '1px solid #d1d5db',
+                          borderRadius: '8px',
+                          fontSize: '14px'
+                        }}
+                      >
+                        <option value="">Escolha um horário</option>
+                        {horariosDisponiveis.map(hora => (
+                          <option key={hora} value={hora}>{hora}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {selectedDate && (
+                    <div style={{
+                      backgroundColor: '#f0f9ff',
+                      padding: '16px',
+                      borderRadius: '8px',
+                      marginBottom: '16px'
+                    }}>
+                      <p style={{ margin: 0, fontSize: '14px', color: '#1e40af' }}>
+                        <strong>Data selecionada:</strong> {selectedDate.toLocaleDateString('pt-PT', {
+                          weekday: 'long',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </p>
+                      {selectedHour && (
+                        <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#1e40af' }}>
+                          <strong>Horário:</strong> {selectedHour}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                    <button
+                      onClick={() => setIsCalendarOpen(false)}
+                      style={{
+                        flex: 1,
+                        padding: '8px 16px',
+                        border: '1px solid #d1d5db',
+                        backgroundColor: 'white',
+                        color: '#374151',
+                        borderRadius: '8px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={confirmarReserva}
+                      disabled={!selectedDate || !selectedHour}
+                      style={{
+                        flex: 1,
+                        padding: '8px 16px',
+                        backgroundColor: selectedDate && selectedHour ? 'green' : '#d1d5db',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        cursor: selectedDate && selectedHour ? 'pointer' : 'not-allowed'
+                      }}
+                    >
+                      Confirmar Reserva
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '32px 0' }}>
+                  <div style={{ fontSize: '48px', marginBottom: '16px' }}>✅</div>
+                  <h3 style={{ fontSize: '20px', fontWeight: '600', color: '#166534', marginBottom: '8px' }}>
+                    Reserva Confirmada!
+                  </h3>
+                  <p style={{ color: '#6b7280', margin: 0 }}>
+                    Sua reserva foi salva com sucesso.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 type Poi = { 
   key: string, 
@@ -45,8 +426,8 @@ type Poi = {
   status?: string
   connectorType?: string
   pricePerHour?:string
-}
 
+}
 
 const Mapa = () => {
   const [open, setOpen] = React.useState(false);
@@ -54,11 +435,6 @@ const Mapa = () => {
 
   const abrirModal = () => setOpen(true);
   const fecharModal = () => setOpen(false);
-
-  const reservarStation=()=>{
-    
-    alert("Reservando "+ selectedStation.id + " 2225" )
-  }
 
   const [stations, setStations] = useState<Poi[]>([]);
   const [loading, setLoading] = useState(true);
@@ -159,6 +535,7 @@ const Mapa = () => {
               status: station.status,
               connectorType:station.connectorType,
               pricePerHour:station.pricePerHour
+
             };
           }).filter(station => 
             // Filtra estações com coordenadas válidas
@@ -399,11 +776,13 @@ const Mapa = () => {
       <CustomModal
         open={open}
         onClose={fecharModal}
+
       >
         {selectedStation && (
           <Box sx={{ p: 2 }}>
+     
             <Box sx={{marginLeft:"-4%",marginTop:"-2%"}}>
-                  <TableContainer component={Paper} sx={{marginLeft:"1%",marginTop:"-2%" ,width:650,backgroundColor:"#FFFDF6"}}>
+                  <TableContainer component={Paper} sx={{marginLeft:"1%",marginTop:"2%" ,width:650,backgroundColor:"#FFFDF6"}}>
                     <Table  aria-label="simple table">
                       <TableHead>
                         <TableRow>
@@ -443,44 +822,25 @@ const Mapa = () => {
          
 
             </Box>
-            <Box>
+
+
+            
+            <Box sx={{ display: 'flex', gap: 3,marginTop:"10%",marginLeft:"-3%", alignItems: 'center' }}>
+              <ReservaCalendario selectedStation={selectedStation}/>
               <button 
-                      onClick={fecharModal}
-                      style={{
-                        padding: '10px 20px',
-                        backgroundColor: '#1976d2',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        marginTop:"15%",
-                        marginLeft:"-3%"
-                      }}
-                    >
-                      Fechar
-                </button>
-             <button 
-                      onClick={reservarStation}
-                      style={{
-                        
-                        padding: '10px 20px',
-                        backgroundColor: 'green',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        marginTop:"15%",
-                        marginLeft:"3%"
-                      }}
-                    >
-                      Reservar 
-                </button>
-
-
-
+                onClick={fecharModal}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: '#1976d2',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Fechar
+              </button>
             </Box>
-           
-      
           </Box>
         )}
       </CustomModal>
