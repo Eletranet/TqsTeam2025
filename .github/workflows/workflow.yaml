@@ -41,13 +41,13 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ./client/EletranetFrontend/package-lock.json
 
-      - name: Build frontend
-        working-directory: ./client/EletranetFrontend/
-        run: npm run build
-
       - name: Install frontend dependencies
         working-directory: ./client/EletranetFrontend/
         run: npm install
+
+      - name: Build frontend
+        working-directory: ./client/EletranetFrontend/
+        run: npm run build
 
       - name: Serve frontend (static files)
         run: |
