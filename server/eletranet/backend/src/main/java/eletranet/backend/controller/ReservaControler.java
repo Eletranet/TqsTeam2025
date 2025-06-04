@@ -1,12 +1,10 @@
 package eletranet.backend.controller;
 
 
-import eletranet.backend.entity.Person;
 import eletranet.backend.entity.Reserva;
 import eletranet.backend.entity.Station;
 import eletranet.backend.enums.ReservaStatus;
 import eletranet.backend.enums.StationStatus;
-import eletranet.backend.repository.ReservaRepository;
 import eletranet.backend.services.PersonServices;
 import eletranet.backend.services.ReservaServices;
 import eletranet.backend.services.StationServices;
@@ -88,7 +86,9 @@ public class ReservaControler {
 
         /// ver se ja existe resevara para o posto no mesmo dia e horario
 
-        Reserva reserva = new Reserva(person.getId(),ReservaStatus.PENDENTE,dataReserva,station.get().getPricePerHour(), station.get().getName(),stationID,horaReserva,duracaoReserva,tipoCaregamento);
+        Reserva reserva = new Reserva(person.getId(),ReservaStatus.PENDENTE,dataReserva,station.get().getPricePerHour(), station.get().getName(),stationID,horaReserva);
+        reserva.setDuracaoReserva(duracaoReserva);
+        reserva.setTipoCaregamento(tipoCaregamento);
 
 
         boolean isValid=reservaServices.existeConflitoDeReservaPendente(reserva);
@@ -111,7 +111,7 @@ public class ReservaControler {
     }
 
     @PutMapping("/manageReserva")
-    public  ResponseEntity<String> cancelarReserva(@RequestParam Long idReserva,@RequestParam String operation){
+    public  ResponseEntity<String> manageReservaReserva(@RequestParam Long idReserva,@RequestParam String operation){
         boolean operationStatus = reservaServices.manageReserva(idReserva,operation);
         if(operationStatus){
             logger.info("Reserva {} atualiazada com sucesso", idReserva);

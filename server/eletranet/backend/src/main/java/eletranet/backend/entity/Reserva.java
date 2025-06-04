@@ -46,7 +46,7 @@ public class Reserva {
                 '}';
     }
 
-    public Reserva(Long idUsuario, ReservaStatus statusreserva  , String dataReserva, Double valorReserva, String stationName, Long stationId, String horaReserva, String duracaoReserva, String tipoCaregamento) {
+    public Reserva(Long idUsuario, ReservaStatus statusreserva  , String dataReserva, Double valorReserva, String stationName, Long stationId, String horaReserva) {
         this.idUsuario = idUsuario;
         this.statusReserva =statusreserva;
         this.dataReserva = dataReserva;
@@ -54,8 +54,7 @@ public class Reserva {
         this.stationName = stationName;
         this.stationId = stationId;
         this.horaReserva=horaReserva;
-        this.duracaoReserva=duracaoReserva;
-        this.tipoCaregamento=tipoCaregamento;
+
 
     }
 
