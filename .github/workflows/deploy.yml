@@ -44,7 +44,7 @@ jobs:
           context: ./server/eletranet/backend
           file: ./server/eletranet/backend/Dockerfile
           push: true
-          tags:  ${{ secrets.DOCKER_USERNAME }}/eletranet-backend:latest
+          tags:  apg2000/eletranet-backend:latest
           labels: ${{ steps.meta.outputs.labels }}
 
   build-user-frontend-image:
