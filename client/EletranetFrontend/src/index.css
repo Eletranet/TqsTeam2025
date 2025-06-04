@@ -1,5 +1,5 @@
 body {
-  background-color: #222; /* ou outra cor */
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   /* ou background-image, por exemplo: */
   /* background-image: url('/assets/background.jpg'); */
   /* background-size: cover; */

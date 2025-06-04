@@ -9,4 +9,5 @@ public interface StationServices {
     public Station saveStation(Station station);
     public Optional<Station> getStationByName(String stationName);
     public List<Station> getAllStations();
+    public Optional<Station> getStationById(Long id);
 }

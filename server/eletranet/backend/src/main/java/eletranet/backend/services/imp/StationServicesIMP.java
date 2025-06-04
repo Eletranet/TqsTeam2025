@@ -40,4 +40,9 @@ public class StationServicesIMP implements StationServices {
     public List<Station> getAllStations() {
         return  stationRepository.findAll();
     }
+
+    @Override
+    public Optional<Station> getStationById(Long id) {
+        return  stationRepository.findById(id);
+    }
 }

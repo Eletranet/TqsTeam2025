@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+
 @Generated
 @Service
 public class TokenProvider {
@@ -35,6 +36,7 @@ public class TokenProvider {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception) {
+
             throw new JWTVerificationException("Error while validating token", exception);
         }
     }
