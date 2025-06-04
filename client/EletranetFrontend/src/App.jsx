@@ -17,30 +17,30 @@ import { Box, Container } from '@mui/material';
 import MinhasReservas from "./pages/MinhasReservas.tsx";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-
-    <Box>
-    <BrowserRouter>
-        <Navbar/>
-
-      <Routes>
-        <Route path="/loguin" element={<SignIn /> }> </Route>
-        <Route path="/" element={<Home/> }> </Route>
-        <Route path="/register" element={<Register/> }> </Route>
-        <Route path="/mapa" element={<Mapa/> }> </Route>
-        <Route path="/minhas_reservas" element={<MinhasReservas/>}> </Route>
-
-
-      </Routes>  
-    <Footer/>
-    </BrowserRouter>      
+    <Box sx={{
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      <BrowserRouter>
+        <Navbar />
+        
+        {/* Container para as rotas que vai crescer para ocupar o espaço disponível */}
+        <Box component="main" sx={{ flex: 1 }}>
+          <Routes>
+            <Route path="/loguin" element={<SignIn />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/mapa" element={<Mapa />} />
+            <Route path="/minhas_reservas" element={<MinhasReservas />} />
+          </Routes>
+        </Box>
+        
+        <Footer />
+      </BrowserRouter>
     </Box>
-
-    </>
-  )
+  );
 }
 
-export default App
+export default App;
