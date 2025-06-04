@@ -1,5 +1,7 @@
 package eletranet.backend.features;
 
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.Então;
 import io.cucumber.java.pt.Quando;
@@ -7,6 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -16,10 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FiltrosListaEstação {
-    private WebDriver driver = new FirefoxDriver();
-    private WebDriverWait wait = new WebDriverWait(
-            driver, Duration.ofSeconds(10)
-    );
+    private WebDriver driver = null;
+    private WebDriverWait wait = null;
 
 
     private boolean isConnectorChecked(String conector) {
@@ -27,6 +28,20 @@ public class FiltrosListaEstação {
         String checkboxXpath = String.format("//label[contains(., '%s')]//input[@type='checkbox']", conector);
         WebElement checkbox = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(checkboxXpath)));
         return checkbox.isSelected();
+    }
+
+    @Before
+    public void setup() {
+        FirefoxOptions options = new FirefoxOptions();
+        options.addArguments("--headless");
+        driver = new FirefoxDriver(options);
+
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    }
+
+    @After
+    public void teardown() {
+        driver.quit();
     }
 
     @Dado("que tenho sessão iniciada")
