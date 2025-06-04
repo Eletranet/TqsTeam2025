@@ -36,9 +36,14 @@ jobs:
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
+        working-directory: ./client/EletranetFrontend/
         with:
           node-version: 22.1.0  # Version corrected (22.15.1 doesn't exist)
           cache: 'npm'
+
+      - name: Build frontend
+        working-directory: ./client/EletranetFrontend/
+        run: npm run build
 
       - name: Install frontend dependencies
         working-directory: ./client/EletranetFrontend/
