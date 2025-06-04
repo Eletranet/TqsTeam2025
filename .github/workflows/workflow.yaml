@@ -40,6 +40,7 @@ jobs:
         with:
           node-version: 22.1.0  # Version corrected (22.15.1 doesn't exist)
           cache: 'npm'
+          cache-dependency-path: client/EletranetFrontend/package-lock.json
 
       - name: Build frontend
         working-directory: ./client/EletranetFrontend/
