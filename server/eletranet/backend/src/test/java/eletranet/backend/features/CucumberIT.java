@@ -27,6 +27,6 @@ import org.junit.platform.suite.api.Suite;
 @IncludeEngines("cucumber")
 @SelectClasspathResource("eletranet/backend")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "eletranet.backend")
-public class CucumberTest {
+public class CucumberIT {
 
 }
