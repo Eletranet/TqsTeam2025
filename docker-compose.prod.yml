@@ -1,0 +1,49 @@
+
+services:
+
+  user-frontend:
+    image: tqs/eletranet-frontend:latest
+    volumes:
+      - /app/node_modules
+    networks:
+      - backend_network
+    ports:
+      - '3001:5173'
+    depends_on:
+      - backend
+  
+  backend:
+    image: tqs/eletranet-backend:latest
+    hostname: "eletranet-backend"
+    networks:
+      - backend_network
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres-db
+
+  postgres-db:
+    image: postgres:latest
+    restart: always
+    hostname: postgres-db
+    environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=tqs
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+      - ./Postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - backend_network
+
+volumes:
+  postgres_db:
+    driver: local
+  exclude:   
+
+networks:
+  backend_network:
+    driver: bridge
+
+
