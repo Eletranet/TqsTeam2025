@@ -35,7 +35,9 @@ jobs:
         working-directory: server/eletranet/backend
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=APG2000_TqsTeam2025 -Dsonar.organization=apg2000 -Dsonar.host.url=https://sonarcloud.io -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} -Dsonar.pullrequest.branch=${{ github.head_ref }} -Dsonar.pullrequest.base=${{ github.base_ref }}        
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=APG2000_TqsTeam2025
+
+
       - name: Import results to Xray
         uses: mikepenz/xray-action@v3
         with:
