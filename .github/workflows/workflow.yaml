@@ -45,8 +45,8 @@ jobs:
         run: npm install
 
       - name: Serve frontend (static files)
-          run: |
-              npx serve -s ./client/EletranetFrontend/build &
+        run: |
+          npx serve -s ./client/EletranetFrontend/build &
 
       - name: Build and analyze
         working-directory: server/eletranet/backend
