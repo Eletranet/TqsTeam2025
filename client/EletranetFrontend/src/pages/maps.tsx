@@ -1164,23 +1164,6 @@ const Mapa = () => {
               >
                 Fechar
               </button>
-                <button 
-                onClick={()=>alert("Ver rotas")}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: 'red',
-                  color: 'white',
-                  border: 'none',
-                  cursor: 'pointer',
-                  height:40,
-                  borderRadius: '4px',
-
-        
-                  
-                }}
-              >
-                Ver Rotas
-              </button>
             </Box>
           </Box>
         )}

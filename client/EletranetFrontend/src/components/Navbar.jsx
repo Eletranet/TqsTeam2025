@@ -33,6 +33,8 @@ return (
           
               <Button color="inherit" onClick={()=>{navigator("/minhas_reservas")}}>Minhas Reservas</Button>
               <Button color="inherit" onClick={()=>{navigator("/mapa")}}>Ver Postos</Button>
+              <Button color="inherit" onClick={()=>{navigator("/rotas")}}>Rotas Personalizadas</Button>
+
               <Button color="inherit" onClick={()=>{
                   localStorage.clear();
                   navigator("/loguin")

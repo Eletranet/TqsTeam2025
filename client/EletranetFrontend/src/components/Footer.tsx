@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
 const Footer = () => {
   const socialIcons = [
@@ -8,8 +9,13 @@ const Footer = () => {
     { name: 'LinkedIn', icon: '💼' }
   ];
 
-  const quickLinks = ['Início', 'Estações', 'Tarifas', 'Sobre Nós'];
-  const services = ['Carregamento Rápido', 'Reservas Online', 'Suporte 24/7'];
+const quickLinks = [
+  { label: 'Início', href: '/' },
+  { label: 'Estações', href: '/mapa' },
+  { label: 'Tarifas', href: '/tarifas' },
+  { label: 'Sobre Nós', href: '/sobre' }
+];
+  const services = ['Carregamento Rápido', 'Reservas Online', 'Rotas Personalizadas'];
 
   return (
     <>
@@ -114,8 +120,8 @@ const Footer = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {quickLinks.map((item) => (
                   <a
-                    key={item}
-                    href="#"
+                    key={item.label}
+                    href={item.href}
                     className="link-hover"
                     style={{
                       color: '#9ca3af',
@@ -123,8 +129,8 @@ const Footer = () => {
                       fontSize: '0.9rem'
                     }}
                   >
-                    {item}
-                  </a>
+                {item.label}
+                   </a>
                 ))}
               </div>
             </div>

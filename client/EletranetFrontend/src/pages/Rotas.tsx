@@ -332,12 +332,15 @@ function Rotas() {
     }
   };
 
+  // Verificar autenticação (comentado conforme solicitado)
+  
   useEffect(() => {
     const token = localStorage.getItem("TokenEletraNet");
     if (!token) {
       navigate("/loguin");
     }
   }, [navigate]);
+  
 
   return (
 
