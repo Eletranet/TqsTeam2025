@@ -1,19 +1,29 @@
-# Use official Node 20 image
+# Stage 1: Build
 FROM node:20 AS build
 
-# Set working directory
 WORKDIR /app
-
-# Copy package.json and package-lock.json
 COPY package.json package-lock.json ./
-
 RUN npm install
-
-# Copy the source code
 COPY . .
 
-# Expose the port where Vite server will run
+# Define variável de ambiente para o build (passada como argumento)
+ARG VITE_BACKEND_API
+ENV VITE_BACKEND_API=$VITE_BACKEND_API
+
+RUN npm run build
+
+# Stage 2: Serve a build
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Instala um servidor estático simples
+RUN npm install -g serve
+
+# Copia a pasta da build para a imagem final
+COPY --from=build /app/dist ./dist
+
 EXPOSE 5173
 
-# Run the application
-CMD ["npm", "run", "dev"]
+# Serve os ficheiros estáticos na porta 5173
+CMD ["serve", "-s", "dist", "-l", "5173"]
