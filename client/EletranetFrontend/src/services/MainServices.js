@@ -1,8 +1,9 @@
 import axios from 'axios'
 
 //const backendApi = "http://deti-tqs-17.ua.pt:8080"
-const backendApi ="http://localhost:8080"
+//const backendApi ="http://localhost:8080"
 
+const backendApi = import.meta.env.VITE_BACKEND_API;
 
 export const getAllStations = async () => {
   try {
