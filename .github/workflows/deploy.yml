@@ -74,16 +74,14 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
-
       - name: Create deployment (Jira)
         id: create_deployment
         uses: chrnorm/deployment-action@releases/v1
         with:
           environment: production
           ref: ${{ github.ref }}
-          task: deploy
-          transient_environment: false
           description: "Deploy da versão para produção"
+
 
       - name: "Deploy"
         run: |
