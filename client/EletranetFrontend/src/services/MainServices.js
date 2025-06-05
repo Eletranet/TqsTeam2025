@@ -1,14 +1,15 @@
 import axios from 'axios'
 
-const backendAuthApi = "http://deti-tqs-17.ua.pt:8080/api"
+//const backendApi = "http://deti-tqs-17.ua.pt:8080"
+//const backendApi ="http://localhost:8080"
 
-const reservaAPiurl="http://deti-tqs-17.ua.pt:8080/reserva"
+const backendApi = import.meta.env.VITE_BACKEND_API;
 
 export const getAllStations = async () => {
   try {
     const token = localStorage.getItem("TokenEletraNet") ? localStorage.getItem("TokenEletraNet"): undefined;
     if (token == undefined) {return}
-    const result = await axios.get(backendAuthApi + "/getAllStations", {
+    const result = await axios.get(backendApi + "/api/getAllStations", {
       headers: {
         Authorization: `Bearer ${token}`, 
       },
@@ -29,7 +30,7 @@ export const getAllReservas = async () => {
   try {
     const token = localStorage.getItem("TokenEletraNet") ? localStorage.getItem("TokenEletraNet"): undefined;
     if (token == undefined) {return}
-    const result = await axios.get(reservaAPiurl + "/getAll", {
+    const result = await axios.get(backendApi + "/reserva/getAll", {
       headers: {
         Authorization: `Bearer ${token}`, 
       },
@@ -50,7 +51,7 @@ export const getMyReservas = async () => {
   try {
     const token = localStorage.getItem("TokenEletraNet") ? localStorage.getItem("TokenEletraNet"): undefined;
     if (token == undefined) {return}
-    const result = await axios.get(reservaAPiurl + "/getReservasByIdUsuario", {
+    const result = await axios.get(backendApi + "/reserva/getReservasByIdUsuario", {
       headers: {
         Authorization: `Bearer ${token}`, 
       },
@@ -71,7 +72,7 @@ export const getMyReservas = async () => {
 
 export const fazerReserva = async (reservaData) => {
   
-  const url=`http://deti-tqs-17.ua.pt:8080/reserva/fazerReserva?stationID=${reservaData.selectedStationID}&dataReserva=${reservaData.data}&horaReserva=${reservaData.hora}&duracaoReserva=${reservaData.duracao}&tipoCaregamento=${reservaData.tipoCaregamento}`
+  const url=backendApi+`/reserva/fazerReserva?stationID=${reservaData.selectedStationID}&dataReserva=${reservaData.data}&horaReserva=${reservaData.hora}&duracaoReserva=${reservaData.duracao}&tipoCaregamento=${reservaData.tipoCaregamento}`
 
   try {
     const token = localStorage.getItem("TokenEletraNet") ? localStorage.getItem("TokenEletraNet"): undefined;
@@ -94,7 +95,7 @@ export const fazerReserva = async (reservaData) => {
 
 export const autualizarReserva = async (idReserva,operation) => {
   
-  const url=`http://deti-tqs-17.ua.pt:8080/reserva/manageReserva?idReserva=${idReserva}&operation=${operation}`
+  const url=backendApi+`/reserva/manageReserva?idReserva=${idReserva}&operation=${operation}`
 
   try {
     const token = localStorage.getItem("TokenEletraNet") ? localStorage.getItem("TokenEletraNet"): undefined;
