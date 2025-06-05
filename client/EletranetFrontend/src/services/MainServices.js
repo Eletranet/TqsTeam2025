@@ -4,6 +4,7 @@ import axios from 'axios'
 //const backendApi ="http://localhost:8080"
 
 const backendApi = import.meta.env.VITE_BACKEND_API;
+console.log("backend api:",backendApi)
 
 export const getAllStations = async () => {
   try {
