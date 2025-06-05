@@ -1014,10 +1014,9 @@ const Mapa = () => {
                 onChange={handleChange}
                 displayEmpty
               >
-                <MenuItem value={"STATUS_ATIVA"}>Activa</MenuItem>
+                <MenuItem value={"STATUS_ATIVA"}>Livre</MenuItem>
                 <MenuItem value={"STATUS_OCUPADO"}>Ocupado</MenuItem>
                 <MenuItem value={"STATUS_DESLIGADO"}>Desligado</MenuItem>
-                <MenuItem value={"STATUS_RESERVADO"}>Reservado</MenuItem>
                 <MenuItem value="">Mostrar Todos os postos</MenuItem>
               </Select>
               <FormHelperText>Estado do Posto</FormHelperText>
