@@ -70,7 +70,7 @@ jobs:
           tags: apg2000/eletranet-frontend:latest
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            VITE_BACKEND_API=https://deti-tqs-17.ua.pt
+            VITE_BACKEND_API=http://deti-tqs-17.ua.pt:8080
 
   deploy:
     runs-on: self-hosted
