@@ -33,7 +33,7 @@ public class FiltrosListaEstação {
     @Before
     public void setup() {
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless=new");
+        // options.addArguments("--headless=new");
         driver = new ChromeDriver(options);
 
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -41,7 +41,7 @@ public class FiltrosListaEstação {
 
     @After
     public void teardown() {
-        driver.quit();
+        //driver.quit();
     }
 
     @Dado("que tenho sessão iniciada")
@@ -50,6 +50,9 @@ public class FiltrosListaEstação {
         driver.findElement(By.id("username")).sendKeys("a");
         driver.findElement(By.id("password")).sendKeys("123456");
         driver.findElement(By.id("button-signin")).click();
+
+        // Wait until the URL is exactly the home page
+        wait.until(ExpectedConditions.urlToBe("http://localhost:5173/"));
     }
 
     @Dado("que acabo de abrir a lista de estações")
