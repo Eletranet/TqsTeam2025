@@ -1014,10 +1014,9 @@ const Mapa = () => {
                 onChange={handleChange}
                 displayEmpty
               >
-                <MenuItem value={"STATUS_ATIVA"}>Activa</MenuItem>
+                <MenuItem value={"STATUS_ATIVA"}>Livre</MenuItem>
                 <MenuItem value={"STATUS_OCUPADO"}>Ocupado</MenuItem>
                 <MenuItem value={"STATUS_DESLIGADO"}>Desligado</MenuItem>
-                <MenuItem value={"STATUS_RESERVADO"}>Reservado</MenuItem>
                 <MenuItem value="">Mostrar Todos os postos</MenuItem>
               </Select>
               <FormHelperText>Estado do Posto</FormHelperText>
@@ -1164,23 +1163,6 @@ const Mapa = () => {
                 }}
               >
                 Fechar
-              </button>
-                <button 
-                onClick={()=>alert("Ver rotas")}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: 'red',
-                  color: 'white',
-                  border: 'none',
-                  cursor: 'pointer',
-                  height:40,
-                  borderRadius: '4px',
-
-        
-                  
-                }}
-              >
-                Ver Rotas
               </button>
             </Box>
           </Box>

@@ -1,40 +1,39 @@
+version: "3.9"
 
 services:
 
   user-frontend:
-    build: 
+    build:
       context: ./client/EletranetFrontend
       dockerfile: Dockerfile
-    volumes:
-      - ./client/EletranetFrontend:/app
-      - /app/node_modules
-    networks:
-      - backend_network
+      args:
+        VITE_BACKEND_API: "http://localhost:8080"
     ports:
       - '3001:5173'
+    networks:
+      - backend_network
     depends_on:
       - backend
-  
+
   backend:
-    build: 
+    build:
       context: ./server/eletranet/backend
       dockerfile: Dockerfile
     volumes:
       - ./server/eletranet/backend:/Backend
-    networks:
-      - backend_network
     ports:
       - '8080:8080'
+    networks:
+      - backend_network
     depends_on:
       - postgres-db
 
   postgres-db:
     image: postgres:latest
     restart: always
-    hostname: postgres-db
     environment:
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=tqs
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=tqs
     ports:
       - '5432:5432'
     volumes:
@@ -45,11 +44,7 @@ services:
 
 volumes:
   postgres_db:
-    driver: local
-  exclude:   
 
 networks:
   backend_network:
     driver: bridge
-
-

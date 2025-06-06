@@ -1,20 +1,13 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# GitHub recommends pinning actions to a commit SHA.
-# To get a newer version, you will need to update the SHA.
-# You can also reference a tag or branch, but the action may change without warning.
-
-#on:
-#  release:
-#    types: [published]
-
 name: Publish Docker images
 on:
   push:
     branches: ['main']
+
+permissions:
+  contents: read
+  deployments: write
+  statuses: write
+
 
 jobs:
   build-backend-image:
@@ -34,9 +27,9 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        uses: docker/metadata-action@v4
         with:
-          images:  apg2000/eletranet-backend
+          images: apg2000/eletranet-backend
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -44,7 +37,7 @@ jobs:
           context: ./server/eletranet/backend
           file: ./server/eletranet/backend/Dockerfile
           push: true
-          tags:  apg2000/eletranet-backend:latest
+          tags: apg2000/eletranet-backend:latest
           labels: ${{ steps.meta.outputs.labels }}
 
   build-user-frontend-image:
@@ -64,33 +57,51 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        uses: docker/metadata-action@v4
         with:
-          images:  apg2000/eletranet-frontend
+          images: apg2000/eletranet-frontend
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        uses: docker/build-push-action@v5
         with:
           context: ./client/EletranetFrontend
           file: ./client/EletranetFrontend/Dockerfile
           push: true
-          tags:  apg2000/eletranet-frontend:latest
+          tags: apg2000/eletranet-frontend:latest
           labels: ${{ steps.meta.outputs.labels }}
-
+          build-args: |
+            VITE_BACKEND_API=https://deti-tqs-17.ua.pt:8080
 
   deploy:
     runs-on: self-hosted
     name: "Deploy to VM"
-    needs: [build-backend-image,   build-user-frontend-image]
+    needs: [build-backend-image, build-user-frontend-image]
 
     steps:
-    - name: "Checkout"
-      uses: actions/checkout@v4
-    - name: "Deploy"
-      run: |
+      - name: "Checkout"
+        uses: actions/checkout@v4
+      - name: Create deployment (Jira)
+        id: create_deployment
+        uses: chrnorm/deployment-action@releases/v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: production
+          ref: ${{ github.ref }}
+          description: "Deploy da versão para produção"
+
+
+      - name: "Deploy"
+        run: |
           echo "CREATE DATABASE tqs_backend;" > init.sql
           sudo docker compose -f docker-compose.prod.yml pull
           sudo docker compose -f docker-compose.prod.yml up -d --remove-orphans
           sudo docker container prune -f
           sudo docker image prune -af
           sudo docker builder prune -af
+
+      - name: Update deployment status (Jira)
+        uses: chrnorm/deployment-status@releases/v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          deployment_id: ${{ steps.create_deployment.outputs.deployment_id }}
+          state: success
