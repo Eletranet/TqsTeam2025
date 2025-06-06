@@ -20,6 +20,8 @@ jobs:
           username: postgres
           password: tqs
           database: tqs_backend
+          port: 5433
+
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -61,9 +63,10 @@ jobs:
           npx serve -s ./client/EletranetFrontend/build &
 
       - name: Build and analyze
-        working-directory: server/eletranet/backend
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        uses: actions/checkout@v4
+        run: |
+            echo "CREATE DATABASE tqs_backend;" > init.sql
+            sudo docker compose -f docker-compose.verify.yml up backend
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=APG2000_TqsTeam2025
 
 
