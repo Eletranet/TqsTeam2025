@@ -16,6 +16,7 @@ import Footer from "./components/Footer.js"
 import { Box, Container } from '@mui/material';
 import MinhasReservas from "./pages/MinhasReservas.tsx";
 import Rotas from './pages/Rotas.jsx';
+import AdminPage from './pages/AdminPage.jsx';
 function App() {
   return (
     <Box sx={{
@@ -35,6 +36,7 @@ function App() {
             <Route path="/mapa" element={<Mapa />} />
             <Route path="/minhas_reservas" element={<MinhasReservas />} />
             <Route path="/rotas" element={<Rotas />} />
+            <Route path="/admin" element={<AdminPage />} /> 
 
           </Routes>
         </Box>
