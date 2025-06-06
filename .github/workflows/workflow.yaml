@@ -55,7 +55,6 @@ jobs:
           npx serve -s ./client/EletranetFrontend/build &
 
       - name: Build and analyze
-        uses: actions/checkout@v4
         run: |
             echo "CREATE DATABASE tqs_backend;" > init.sql
             sudo docker compose -f docker-compose.verify.yml up backend
