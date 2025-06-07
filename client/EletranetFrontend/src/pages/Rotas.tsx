@@ -250,7 +250,7 @@ function Rotas() {
   const fecharModal = () => setOpen(false);
 
   // Carregar estações
-  useEffect(() => {
+
     const fetchStations = async () => {
       try {
         const data = await getAllStations();
@@ -282,11 +282,15 @@ function Rotas() {
       }
     };
 
+
+  useEffect(() => {
+
     fetchStations();
   }, []);
 
   // Função para obter localização e calcular rota
   const calculateRouteToNearestStation = async () => {
+    await fetchStations()
     setLoading(true);
     setError(null);
     setShouldShowDirections(false);
