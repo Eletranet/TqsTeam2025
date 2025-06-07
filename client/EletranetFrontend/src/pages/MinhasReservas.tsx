@@ -367,17 +367,7 @@ export default function MinhasReservas() {
                               <XIcon fontSize="small" />
                             </IconButton>
                           )}
-                          <IconButton 
-                            size="small"
-                            sx={{
-                              bgcolor: '#2196F3',
-                              color: 'white',
-                              '&:hover': { bgcolor: '#1976D2' }
-                            }}
-                            onClick={()=>alert("ver rotas")}
-                          >
-                            <NavigationIcon  fontSize="small" />
-                          </IconButton>
+                       
             
                         </Box>
                       </Grid>
