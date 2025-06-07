@@ -85,8 +85,14 @@ public class ReservaControler {
         }
 
         // ver se ja existe resevara para o posto no mesmo dia e horario
+        Double precoReserva;
 
-        Reserva reserva = new Reserva(person.getId(),ReservaStatus.PENDENTE,dataReserva,station.get().getPricePerHour(), station.get().getName(),stationID,horaReserva);
+        try{
+            precoReserva = station.get().getPricePerHour() * Double.parseDouble(duracaoReserva);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Reserva reserva = new Reserva(person.getId(),ReservaStatus.PENDENTE,dataReserva,precoReserva, station.get().getName(),stationID,horaReserva);
         reserva.setDuracaoReserva(duracaoReserva);
         reserva.setTipoCaregamento(tipoCaregamento);
         reserva.setNameCliente(person.getFirstName() + " " + person.getLastName());
