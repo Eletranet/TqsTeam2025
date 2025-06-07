@@ -735,9 +735,9 @@ const ReservaCalendario = ({ selectedStation }) => {
   );
 };
 
-type Poi = { 
-  key: string, 
-  location: google.maps.LatLngLiteral, 
+type Poi = {
+  key: string,
+  location: google.maps.LatLngLiteral,
   name?: string,
   id?: number,
   status?: string
@@ -827,25 +827,25 @@ const Mapa = () => {
       try {
         setLoading(true);
         setError(null);
-        
+
         const data = await getAllStations();
         console.log("Dados recebidos:", data);
-        
+
         if (data && Array.isArray(data)) {
           // Mapeia os dados da API para o formato POI esperado
           const formattedStations = data.map((station, index) => {
             // Cria uma key única baseada no nome (sem espaços/caracteres especiais)
-            const cleanKey = station.name 
+            const cleanKey = station.name
               ? station.name.toLowerCase()
                   .replace(/\s+/g, '')
                   .replace(/[^a-z0-9]/g, '')
               : `station${station.id || index}`;
-            
+
             return {
               key: cleanKey,
-              location: { 
-                lat: parseFloat(station.latitude), 
-                lng: parseFloat(station.longitude) 
+              location: {
+                lat: parseFloat(station.latitude),
+                lng: parseFloat(station.longitude)
               },
               name: station.name,
               id: station.id,
@@ -854,21 +854,21 @@ const Mapa = () => {
               pricePerHour:station.pricePerHour
 
             };
-          }).filter(station => 
+          }).filter(station =>
             // Filtra estações com coordenadas válidas
             !isNaN(station.location.lat) && !isNaN(station.location.lng)
           );
-          
+
           console.log("Estações formatadas:", formattedStations);
           setStations(formattedStations);
-          
+
           if (formattedStations.length === 0) {
             setError("Nenhuma estação com coordenadas válidas encontrada");
           }
         } else {
           setError("Formato de dados inválido recebido da API");
         }
-        
+
       } catch (err) {
         console.error('Erro ao buscar estações:', err);
         setError('Não foi possível carregar os postos neste momento.. Verifique sua conexão.');
@@ -900,10 +900,10 @@ const Mapa = () => {
   // Mostrar loading enquanto busca dados
   if (loading) {
     return (
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '100vh',
         flexDirection: 'column',
         gap: 2
@@ -920,18 +920,18 @@ const Mapa = () => {
   // Mostrar erro se houver
   if (error) {
     return (
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '100vh',
         flexDirection: 'column',
         gap: 2
       }}>
         <Typography variant="h6" color="error">{error}</Typography>
         <Typography variant="body2">Tente recarregar a página</Typography>
-        <button 
-          onClick={() => window.location.reload()} 
+        <button
+          onClick={() => window.location.reload()}
           style={{
             padding: '10px 20px',
             backgroundColor: '#1976d2',
@@ -950,10 +950,10 @@ const Mapa = () => {
   // Só mostra o mapa se tiver estações carregadas
   if (stations.length === 0) {
     return (
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '100vh',
         flexDirection: 'column',
         gap: 2
@@ -1009,7 +1009,7 @@ const Mapa = () => {
             <FormControl sx={{ m: 1, minWidth: 120 ,marginTop:2}} >
               <Select
                 labelId="demo-simple-select-helper-label"
-                id="demo-simple-select-helper"
+                id="station-state-selector-button"
                 value={StationStatusFormValue}
                 onChange={handleChange}
                 displayEmpty
@@ -1183,11 +1183,11 @@ const PoiMarkers = (props: { pois: Poi[], onMarkerClick: (poi: Poi) => void }) =
   const [markers, setMarkers] = useState<{[key: string]: Marker}>({});
   const clusterer = useRef<MarkerClusterer | null>(null);
   const [circleCenter, setCircleCenter] = useState(null);
-  
+
   const handleClick = useCallback((poi: Poi, ev: google.maps.MapMouseEvent) => {
     if(!map) return;
     if(!ev.latLng) return;
-    
+
     console.log('marker clicked: ', ev.latLng.toString(), 'station:', poi);
     map.panTo(ev.latLng);
     setCircleCenter(ev.latLng);
@@ -1244,9 +1244,9 @@ const PoiMarkers = (props: { pois: Poi[], onMarkerClick: (poi: Poi) => void }) =
           clickable={true}
           onClick={(ev) => handleClick(poi, ev)}
         >
-          <Pin 
-            background={'#222'} 
-            glyphColor={'#FFF'} 
+          <Pin
+            background={'#222'}
+            glyphColor={'#FFF'}
             borderColor={'#222'}
             scale={1.9}
           />
