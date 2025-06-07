@@ -24,7 +24,7 @@ return (
         sx={{ mr: 2 }}
       >
       </IconButton>
-      <Typography  onClick={()=>{navigator("/")}} variant="h6" component="div" sx={{ flexGrow: 1 }}>
+      <Typography  onClick={()=>{navigator("/mapa")}} variant="h6" component="div" sx={{ flexGrow: 1 }}>
         EletraNet
       </Typography>     
 

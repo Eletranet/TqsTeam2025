@@ -11,6 +11,7 @@ import eletranet.backend.services.PersonServices;
 import eletranet.backend.services.StationServices;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,9 +23,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -113,4 +116,98 @@ class StationControllerTest {
                 .andExpect(status().isNoContent());
         verify(stationServices,times(1)).getAllStations();
     }
+
+    @Test
+    void editStationComSucesso() throws Exception {
+        // Arrange
+        Station s1 = new Station("EletraNet Praça do Peixe",
+                StationStatus.STATUS_ATIVA, 0.26, 80,
+                ConnectorType.CCS, 40.6406, -8.6580);
+        s1.setId(1L);
+
+        when(stationServices.getStationById(1L)).thenReturn(Optional.of(s1));
+
+        // Act
+        mockMvc.perform(
+                put("/api/editStation")
+                        .param("newPreco", "0.30")
+                        .param("newEstado", "STATUS_OCUPADO")
+                        .param("stationID", "1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+
+        // Assert
+        ArgumentCaptor<Station> captor = ArgumentCaptor.forClass(Station.class);
+        verify(stationServices).saveStation(captor.capture());
+        Station stationGuardada = captor.getValue();
+
+        assertThat(stationGuardada.getPricePerHour()).isEqualTo(0.30);
+        assertThat(stationGuardada.getStatus()).isEqualTo(StationStatus.STATUS_OCUPADO);
+    }
+
+    @Test
+    void editStationNaoLogado() throws Exception {
+        when(personServices.getUserFromContext()).thenReturn(null);
+
+        mockMvc.perform(
+                put("/api/editStation")
+                        .param("newPreco", "0.30")
+                        .param("newEstado", "STATUS_OCUPADO")
+                        .param("stationID", "1")
+        ).andExpect(status().isUnauthorized());
+
+        verify(stationServices, never()).saveStation(any());
+    }
+
+    @Test
+    void editStationBadRequestEstadoInvalido() throws Exception {
+        mockMvc.perform(
+                put("/api/editStation")
+                        .param("newPreco", "0.30")
+                        .param("newEstado", "estado_invalido")
+                        .param("stationID", "1")
+        ).andExpect(status().isBadRequest());
+
+        verify(stationServices, never()).saveStation(any());
+    }
+
+    @Test
+    void editStationBadRequestPrecoInvalido() throws Exception {
+        mockMvc.perform(
+                put("/api/editStation")
+                        .param("newPreco", "preco_invalido")
+                        .param("newEstado", "STATUS_ATIVA")
+                        .param("stationID", "1")
+        ).andExpect(status().isBadRequest());
+
+        verify(stationServices, never()).saveStation(any());
+    }
+
+    @Test
+    void editStationBadRequestStationIdInvalido() throws Exception {
+        mockMvc.perform(
+                put("/api/editStation")
+                        .param("newPreco", "0.30")
+                        .param("newEstado", "STATUS_ATIVA")
+                        .param("stationID", "invalido")
+        ).andExpect(status().isBadRequest());
+
+        verify(stationServices, never()).saveStation(any());
+    }
+
+    @Test
+    void editStationNaoEncontrada() throws Exception {
+        when(stationServices.getStationById(99L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(
+                put("/api/editStation")
+                        .param("newPreco", "0.30")
+                        .param("newEstado", "STATUS_ATIVA")
+                        .param("stationID", "99")
+        ).andExpect(status().isNotFound());
+
+        verify(stationServices, never()).saveStation(any());
+    }
+
+
 }

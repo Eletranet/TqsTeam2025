@@ -2,18 +2,12 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
 const Footer = () => {
-  const socialIcons = [
-    { name: 'Facebook', icon: '📘' },
-    { name: 'Twitter', icon: '🐦' },
-    { name: 'Instagram', icon: '📷' },
-    { name: 'LinkedIn', icon: '💼' }
-  ];
 
 const quickLinks = [
-  { label: 'Início', href: '/' },
+  { label: 'Início', href: '/mapa' },
   { label: 'Estações', href: '/mapa' },
-  { label: 'Tarifas', href: '/tarifas' },
-  { label: 'Sobre Nós', href: '/sobre' }
+  {label:'Rotas Personalizadas',href:'/rotas'}
+
 ];
   const services = ['Carregamento Rápido', 'Reservas Online', 'Rotas Personalizadas'];
 
@@ -72,39 +66,7 @@ const quickLinks = [
                 Conectando o futuro da mobilidade elétrica com estações de carregamento inteligentes.
               </p>
               
-              {/* Social Media Icons */}
-              <div style={{ display: 'flex', gap: '8px' }}>
-                {socialIcons.map((social, index) => (
-                  <button
-                    key={index}
-                    className="social-icon"
-                    style={{
-                      background: 'transparent',
-                      color: '#9ca3af',
-                      border: '1px solid #374151',
-                      borderRadius: '8px',
-                      padding: '8px',
-                      cursor: 'pointer',
-                      fontSize: '16px',
-                      width: '36px',
-                      height: '36px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                    onMouseOver={(e) => {
-                      e.target.style.color = '#4ade80';
-                      e.target.style.borderColor = '#4ade80';
-                    }}
-                    onMouseOut={(e) => {
-                      e.target.style.color = '#9ca3af';
-                      e.target.style.borderColor = '#374151';
-                    }}
-                  >
-                    {social.icon}
-                  </button>
-                ))}
-              </div>
+      
             </div>
 
             {/* Quick Links */}
@@ -147,9 +109,8 @@ const quickLinks = [
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {services.map((item) => (
-                  <a
+                  <span
                     key={item}
-                    href="#"
                     className="link-hover"
                     style={{
                       color: '#9ca3af',
@@ -158,7 +119,7 @@ const quickLinks = [
                     }}
                   >
                     {item}
-                  </a>
+                  </span>
                 ))}
               </div>
             </div>
@@ -232,23 +193,7 @@ const quickLinks = [
               © {new Date().getFullYear()} ElectraNet. Todos os direitos reservados.
             </p>
             
-            <div style={{ display: 'flex', gap: '20px' }}>
-              {['Privacidade', 'Termos', 'Cookies'].map((item) => (
-                <a
-                  key={item}
-                  href="#"
-                  style={{
-                    color: '#9ca3af',
-                    textDecoration: 'none',
-                    fontSize: '0.875rem'
-                  }}
-                  onMouseOver={(e) => e.target.style.color = '#4ade80'}
-                  onMouseOut={(e) => e.target.style.color = '#9ca3af'}
-                >
-                  {item}
-                </a>
-              ))}
-            </div>
+    
           </div>
         </div>
       </footer>

@@ -1,5 +1,6 @@
 package eletranet.backend.controller;
 import eletranet.backend.entity.Station;
+import eletranet.backend.enums.StationStatus;
 import eletranet.backend.services.PersonServices;
 import eletranet.backend.services.StationServices;
 import org.slf4j.Logger;
@@ -55,6 +56,35 @@ public class StationController {
             return new ResponseEntity<>(stations, HttpStatus.OK);
         }
 
+    }
+
+    @PutMapping(path = "/editStation")
+    public ResponseEntity<HttpStatus> editStation(@RequestParam String newPreco, @RequestParam String newEstado, @RequestParam String stationID) {
+
+        var person = personServices.getUserFromContext();
+        if (person == null){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not logged in");
+        }
+        StationStatus statusToSave;
+        double newPrecoDouble;
+        Long stationIDLong;
+        try{
+            statusToSave = StationStatus.valueOf(newEstado.toUpperCase());
+            newPrecoDouble = Double.parseDouble(newPreco);
+            stationIDLong = Long.parseLong(stationID);
+        }catch (IllegalArgumentException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Optional<Station> station = stationServices.getStationById(stationIDLong);
+        if (station.isPresent()) {
+            Station currentStation = station.get();
+            currentStation.setPricePerHour(newPrecoDouble);
+            currentStation.setStatus(statusToSave);
+            stationServices.saveStation(currentStation);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 
