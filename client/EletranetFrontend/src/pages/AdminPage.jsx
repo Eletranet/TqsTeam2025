@@ -60,7 +60,7 @@ const theme = createTheme({
   },
 });
 
-import { getMyReservas,autualizarReserva ,getAllStations,autualizarPosto} from "../services/MainServices";
+import { getAllReservas,autualizarReserva ,getAllStations,autualizarPosto} from "../services/MainServices";
 import { useNavigate } from 'react-router';
 import { useEffect } from "react";
 const AdminPage = () => {
@@ -94,7 +94,7 @@ const AdminPage = () => {
 
       try {
 
-        const data = await getMyReservas();
+        const data = await getAllReservas();
 
         if (data) {
 
