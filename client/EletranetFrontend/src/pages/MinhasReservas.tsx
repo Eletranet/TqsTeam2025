@@ -345,7 +345,23 @@ export default function MinhasReservas() {
                                 '&:hover': { bgcolor: '#fef2f2' }
 
                               }}
-                              onClick={()=>{autualizarReserva(reservation.idReserva,"CANCELAR"), window.location.reload()}}
+                              onClick={async ()=>{
+                                
+                                
+                                  {
+                                    const sucesso = await autualizarReserva(reservation.idReserva,"CANCELAR");
+                                    
+                                    if (sucesso === true) {
+                                      window.location.reload()
+                                      
+                                    } else {
+                                      alert("Erro ao autualizar Reserva")
+                                    }
+                                  } 
+                                
+                                
+                                
+                              }}
 
                             >
                               <XIcon fontSize="small" />
