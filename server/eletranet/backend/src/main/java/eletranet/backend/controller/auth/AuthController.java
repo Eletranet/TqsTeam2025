@@ -40,6 +40,7 @@ public class AuthController {
 
         UserDetails newUser = authService.registerUser(person) ;
 
+
         if (newUser == null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
         }

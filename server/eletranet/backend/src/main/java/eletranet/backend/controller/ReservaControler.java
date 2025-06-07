@@ -89,7 +89,7 @@ public class ReservaControler {
         Reserva reserva = new Reserva(person.getId(),ReservaStatus.PENDENTE,dataReserva,station.get().getPricePerHour(), station.get().getName(),stationID,horaReserva);
         reserva.setDuracaoReserva(duracaoReserva);
         reserva.setTipoCaregamento(tipoCaregamento);
-
+        reserva.setNameCliente(person.getFirstName() + " " + person.getLastName());
 
         boolean isValid=reservaServices.existeConflitoDeReservaPendente(reserva);
 

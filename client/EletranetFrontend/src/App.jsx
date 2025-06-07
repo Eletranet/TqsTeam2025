@@ -8,7 +8,6 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import SignIn from "./pages/SignIn.jsx";
-import Home from './pages/Home.jsx';
 import { Navbar } from "./components/Navbar.jsx"
 import Register from './pages/Register.jsx';
 import Mapa from "./pages/maps.js"
@@ -31,7 +30,7 @@ function App() {
         <Box component="main" sx={{ flex: 1 }}>
           <Routes>
             <Route path="/loguin" element={<SignIn />} />
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Mapa />} />
             <Route path="/register" element={<Register />} />
             <Route path="/mapa" element={<Mapa />} />
             <Route path="/minhas_reservas" element={<MinhasReservas />} />

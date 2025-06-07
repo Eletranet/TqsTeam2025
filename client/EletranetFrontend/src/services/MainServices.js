@@ -109,12 +109,41 @@ export const autualizarReserva = async (idReserva,operation) => {
 
     
     if (result.status === 200) {
-      window.location.reload()
+     return true
+
+    }else{
+      return false
     }
   } catch (error) {
-    alert("Erro ao autualizar reserva")
     console.error("Erro ao atualizar reserva:", error);
 
-    return null;
+    return false;
+  }
+};
+
+export const autualizarPosto = async (newEstado,newPreco,stationID,) => {
+  
+  const url=backendApi+`/api/editStation?newPreco=${newPreco}&newEstado=${newEstado}&stationID=${stationID}`
+
+  try {
+    const token = localStorage.getItem("TokenEletraNet") ? localStorage.getItem("TokenEletraNet"): undefined;
+    if (token == undefined) {return}
+    const result = await axios.put(url, {},{
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+    });
+
+    
+    if (result.status === 200) {
+     return true
+
+    }else{
+      return false
+    }
+  } catch (error) {
+    console.error("Erro ao atualizar Posto:", error);
+
+    return false;
   }
 };

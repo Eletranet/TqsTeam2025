@@ -60,7 +60,7 @@ const theme = createTheme({
   },
 });
 
-import { getMyReservas,autualizarReserva ,getAllStations} from "../services/MainServices";
+import { getMyReservas,autualizarReserva ,getAllStations,autualizarPosto} from "../services/MainServices";
 import { useNavigate } from 'react-router';
 import { useEffect } from "react";
 const AdminPage = () => {
@@ -73,11 +73,12 @@ const AdminPage = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('info');
   const [stations, setStations] = useState([]);
-
-
-
   const [searchTerm, setSearchTerm] = useState('');
   const [reservaData, setReservaData] = useState([]);
+
+  const [statusReservaEscolhida, setStatusReservaEscolhida] = useState('');
+  const [statusStationEscolhida, setStationStatusEscolhida] = useState('');
+
   const navigate = useNavigate();
 
   useEffect(()=>{
@@ -177,20 +178,73 @@ const AdminPage = () => {
     ));
     showNotification(`Preço da estação atualizado para €${newPrice}/hora`, 'success');
   };
+  function isNumero(str) {
+    return !isNaN(str) && str.trim() !== '';
+  }
 
-  const updateStationStatus = (stationId, newStatus) => {
-    setStations(prev => prev.map(station => 
-      station.id === stationId ? { ...station, estado: newStatus } : station
-    ));
-    showNotification(`Estado da estação alterado para ${newStatus}`, 'success');
+  const updateStationStatus = async (stationId) => {
+    var newValue = document.getElementById("precohoraTextField").value
+
+    if(!isNumero(newValue)){
+      alert("por favor insira um preco Valido")
+      return
+    }
+    console.log(stationId,statusStationEscolhida , newValue)
+    if(statusStationEscolhida == ""){
+      alert("Por favor escolhe um estado")
+      return
+    }
+
+    try {
+    const sucesso = await autualizarPosto(statusStationEscolhida,newValue,stationId);
+    
+    if (sucesso === true) {
+        setStations(prev => prev.map(station => 
+          station.id === stationId ? { ...station, status: statusStationEscolhida  , pricePerHour:newValue} : station
+        ));
+        showNotification("Posto atualizado", 'success');
+
+
+        setEditingStation(null);
+    } else {
+        showNotification("Nao foi possivel autualizar o Posto", 'error');
+    }
+  } catch (erro) {
+    showNotification(`Erro ao atualizar o Posto #${stationId}: ${erro.message}`, 'error');
+  }
   };
 
-  const updateReservationStatus = (reservationId, newStatus) => {
-    setReservations(prev => prev.map(reservation => 
-      reservation.idReserva === reservationId ? { ...reservation, statusReserva: newStatus } : reservation
-    ));
-    showNotification(`Estado da reserva #${reservationId} alterado para ${newStatus}`, 'success');
-  };
+  const updateReservationStatus = async (reservationId) => {
+  let operation = null;
+
+  if (statusReservaEscolhida === "CANCELADA") {
+    operation = "CANCELAR";
+  } else if (statusReservaEscolhida === "CONFIRMADA") {
+    operation = "CONFIRMAR";
+  } else if (statusReservaEscolhida === "CONCLUIDA") {
+    operation = "CONCLUIR";
+  }
+
+  try {
+    const sucesso = await autualizarReserva(reservationId, operation);
+    
+    if (sucesso === true) {
+      setReservaData(prev => 
+        prev.map(reservation =>
+          reservation.idReserva === reservationId
+            ? { ...reservation, statusReserva: statusReservaEscolhida }
+            : reservation
+        )
+      );
+      showNotification(`Estado da reserva #${reservationId} alterado para ${statusReservaEscolhida}`, 'success');
+      setEditingReservation(null);
+    } else {
+      showNotification(`Não foi possível alterar o estado da reserva #${reservationId} para ${statusReservaEscolhida}`, 'error');
+    }
+  } catch (erro) {
+    showNotification(`Erro ao atualizar a reserva #${reservationId}: ${erro.message}`, 'error');
+  }
+};
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -198,7 +252,10 @@ const AdminPage = () => {
       case 'STATUS_DESLIGADO': return 'error';
       case 'STATUS_RESERVADO': return 'warning';
       case 'CONFIRMADA': return 'info';
-      case 'CANCELADA': return 'default';
+      case 'CONCLUIDA': return 'success';
+      case 'CANCELADA': return 'error';
+      case 'PENDENTE': return 'warning';
+
       default: return 'default';
     }
   };
@@ -274,9 +331,7 @@ const AdminPage = () => {
         >
           Editar
         </Button>
-        <IconButton color="primary">
-          <SettingsIcon />
-        </IconButton>
+      
       </CardActions>
     </Card>
   );
@@ -315,7 +370,7 @@ const AdminPage = () => {
       >
         <DialogTitle sx={{ p: 3, pb: 1 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            Editar Estação
+            Editar  {station.name}
             <IconButton onClick={() => setEditingStation(null)}>
               <CloseIcon />
             </IconButton>
@@ -325,25 +380,25 @@ const AdminPage = () => {
           <Stack spacing={3} sx={{ mt: 1 }}>
             <TextField
               label="Preço por Hora (€)"
-              type="number"
-              inputProps={{ step: '0.01', min: '0' }}
-              defaultValue={station.precoHora}
+              defaultValue={station.pricePerHour}
               fullWidth
               variant="outlined"
-              onChange={(e) => updateStationPrice(station.id, parseFloat(e.target.value))}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+              id='precohoraTextField'
+              //onChange={(e) => updateStationPrice(station.id, parseFloat(e.target.value))}
             />
             <FormControl fullWidth>
               <InputLabel>Estado</InputLabel>
               <Select
-                value={station.estado}
+                defaultValue={station.status}
+
+                value={statusStationEscolhida}
                 label="Estado"
-                onChange={(e) => updateStationStatus(station.id, e.target.value)}
+                onChange={(e) => setStationStatusEscolhida(e.target.value)}
                 sx={{ borderRadius: '8px' }}
               >
-                <MenuItem value="ATIVO">Ativo</MenuItem>
-                <MenuItem value="INATIVO">Inativo</MenuItem>
-                <MenuItem value="MANUTENCAO">Manutenção</MenuItem>
+                <MenuItem value="STATUS_ATIVA">Ativo</MenuItem>
+                <MenuItem value="STATUS_DESLIGADO">Inativo</MenuItem>
+                <MenuItem value="STATUS_RESERVADO">Reservado</MenuItem>
               </Select>
             </FormControl>
           </Stack>
@@ -357,7 +412,7 @@ const AdminPage = () => {
             Cancelar
           </Button>
           <Button 
-            onClick={() => setEditingStation(null)} 
+            onClick={() =>updateStationStatus(editingStation)} 
             variant="contained" 
             sx={{ borderRadius: '8px', px: 3 }}
           >
@@ -393,13 +448,23 @@ const AdminPage = () => {
             <FormControl fullWidth>
               <InputLabel>Estado da Reserva</InputLabel>
               <Select
-                value={reservation.statusReserva}
+                id='newReservaStatusSelect'
+                value={statusReservaEscolhida}
                 label="Estado da Reserva"
-                onChange={(e) => updateReservationStatus(editingReservation, e.target.value)}
-                sx={{ borderRadius: '8px' }}
+                onChange={(e) => 
+                  
+                 {
+                    setStatusReservaEscolhida(e.target.value);
+                 }}
+                 
+                
+                  sx={{ borderRadius: '8px' }}
               >
+
+                
                 <MenuItem value="CONFIRMADA">Confirmada</MenuItem>
                 <MenuItem value="CANCELADA">Cancelada</MenuItem>
+                <MenuItem value="PENDENTE">Pendente</MenuItem>
                 <MenuItem value="CONCLUIDA">Concluída</MenuItem>
               </Select>
             </FormControl>
@@ -414,7 +479,13 @@ const AdminPage = () => {
             Cancelar
           </Button>
           <Button 
-            onClick={() => setEditingReservation(null)} 
+            onClick={() =>{ 
+              
+              updateReservationStatus(editingReservation)
+
+            
+            
+            }} 
             variant="contained" 
             sx={{ borderRadius: '8px', px: 3 }}
           >
@@ -425,18 +496,12 @@ const AdminPage = () => {
     );
   };
 
-  const TabPanel = ({ children, value, index }) => (
-    <div hidden={value !== index}>
-      {value === index && <Box sx={{ py: 4 }}>{children}</Box>}
-    </div>
-  );
-const filteredStations = stations
-    .filter(s => 
-      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.connectorType.toLowerCase().includes(searchTerm.toLowerCase()) 
-   
+const TabPanel = ({ children, value, index }) => (
+  <Box sx={{ py: 4, display: value !== index ? 'none' : 'block' }}>
+    {children}
+  </Box>
+);
 
-    );
 
   return (
     <ThemeProvider theme={theme}>
@@ -444,9 +509,10 @@ const filteredStations = stations
         {/* Header */}
         <AppBar 
           position="static" 
+          
           elevation={0} 
           sx={{ 
-            bgcolor: 'background.paper', 
+            bgcolor: "white", 
             borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`
           }}
         >
@@ -454,38 +520,15 @@ const filteredStations = stations
             <Avatar sx={{ bgcolor: 'primary.main', mr: 2, width: 48, height: 48 }}>
               <ZapIcon fontSize="large" />
             </Avatar>
-            <Box sx={{ flexGrow: 1 }}>
-              <Typography variant="h5" fontWeight="bold">
-                EV Charge Manager
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+            <Box sx={{ flexGrow: 1, marginTop:2 }}>
+              <Typography variant="h5" fontWeight="bold" sx={{color:"black"}}>
                 Painel do Operador
               </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Eletranet Services
+              </Typography>
             </Box>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <IconButton color="inherit">
-                <Badge badgeContent={notifications.length} color="error">
-                  <BellIcon />
-                </Badge>
-              </IconButton>
-              <Divider orientation="vertical" flexItem />
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ textAlign: 'right' }}>
-                  <Typography variant="body2" fontWeight="medium">
-                    Pedro Gonçalves
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    Operador
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'secondary.main', width: 40, height: 40 }}>
-                  PG
-                </Avatar>
-                <IconButton color="inherit">
-                  <LogoutIcon />
-                </IconButton>
-              </Box>
-            </Stack>
+  
           </Toolbar>
         </AppBar>
 
@@ -563,92 +606,26 @@ const filteredStations = stations
 
           {/* Stations Tab */}
           <TabPanel value={activeTab} index={1}>
-            <Typography variant="h5" gutterBottom fontWeight="bold">
-              Gestão de Estações
-            </Typography>
-                   {/* Search Bar */}
-                      <Box sx={{ mb: 3 }}>
-                      
-                        <TextField
-                          fullWidth
-                          placeholder="Pesquisar por nome do posto ou velocidade de carrgamento..."
-                          value={searchTerm}
-                          onChange={
-                                (e)=>{
 
-                                
-                                setSearchTerm(e.target.value)
-
-                            }
-                          }
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <SearchIcon sx={{ color: '#64748b' }} />
-                              </InputAdornment>
-                            ),
-                            endAdornment: searchTerm && (
-                              <InputAdornment position="end">
-                                <IconButton
-                                  onClick={() => setSearchTerm('')}
-                                  sx={{ color: '#64748b' }}
-                                >
-                                  <XIcon />
-                                </IconButton>
-                              </InputAdornment>
-                            ),
-                            sx: {
-                              bgcolor: 'rgba(255,255,255,0.9)',
-                              backdropFilter: 'blur(10px)',
-                              '& .MuiOutlinedInput-root': {
-                                '&:hover fieldset': {
-                                  borderColor: '#2196F3',
-                                },
-                                '&.Mui-focused fieldset': {
-                                  borderColor: '#2196F3',
-                                },
-                              }
-                            }
-                          }}
-                        />
-                      </Box>
-            <Grid container spacing={2}>
+        <Grid container spacing={2}>
               
            
 
-    {filteredStations.length === 0 ? (
+          {stations.length === 0 ? (
               <Paper sx={{ p: 1, textAlign: 'center', bgcolor: 'rgba(255,255,255,0.9)',width:"100%" }}>
-                <Typography variant="h1" sx={{ fontSize: '5rem', mb: 3 }}>
-                  {searchTerm ? '🔍' : '📅'}
-                </Typography>
+               
                 <Typography variant="h4" sx={{ fontWeight: 600, color: '#64748b', mb: 2 }}>
                   Nenhuma estacao encontrada
                 </Typography>
-                <Typography variant="h6" sx={{ color: '#94a3b8', mb: 3 }}>
-                {searchTerm 
-                  ? `Não há postos que correspondam à pesquisa "${searchTerm}".`
-                  : 'Não há postos para tipo de caregamento que  pesquisas.'
-                }
-                </Typography>
-                {searchTerm && (
-                  <Button
-                    variant="contained"
-                    onClick={() => setSearchTerm('')}
-                    sx={{ mt: 2 }}
-                  >
-                    Limpar pesquisa
-                  </Button>
-                )}
+            
               </Paper>
             ) : (
                 <>
-                   {filteredStations.map(station => (
-
-
+                   {stations.map(station => (
 
                       <Grid item xs={12} md={6} lg={4} key={station.id} sx={{width:"30%"}}>
                           <StationCard station={station} />
-                        </Grid>
+                      </Grid>
 
 
 
@@ -692,7 +669,7 @@ const filteredStations = stations
                               {reservation.nomeUsuario}
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
-                              ID: {reservation.idUsuario}
+                             {reservation.nameCliente}
                             </Typography>
                           </Box>
                         </Box>
