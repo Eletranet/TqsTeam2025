@@ -345,7 +345,7 @@ export default function MinhasReservas() {
                                 '&:hover': { bgcolor: '#fef2f2' }
 
                               }}
-                              onClick={()=>autualizarReserva(reservation.idReserva,"CANCELAR")}
+                              onClick={()=>{autualizarReserva(reservation.idReserva,"CANCELAR"), window.location.reload()}}
 
                             >
                               <XIcon fontSize="small" />
