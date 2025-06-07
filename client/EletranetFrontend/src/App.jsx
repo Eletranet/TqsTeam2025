@@ -15,7 +15,7 @@ import Footer from "./components/Footer.js"
 import { Box, Container } from '@mui/material';
 import MinhasReservas from "./pages/MinhasReservas.tsx";
 import Rotas from './pages/Rotas.jsx';
-import AdminPage from './pages/AdminPage.jsx';
+import AdminPage from './pages/AdminPage.tsx';
 function App() {
   return (
     <Box sx={{

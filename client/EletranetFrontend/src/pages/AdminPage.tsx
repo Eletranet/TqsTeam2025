@@ -500,9 +500,17 @@ const TabPanel = ({ children, value, index }) => (
   <Box sx={{ py: 4, display: value !== index ? 'none' : 'block' }}>
     {children}
   </Box>
+  
 );
 
-
+  const getTypeConfig = (type: string) => {
+    const configs = {
+      'Rápido': { color: '#2196F3', icon: '⚡' },
+      'Super Rápido': { color: '#9C27B0', icon: '⚡⚡' },
+      'Normal': { color: '#607D8B', icon: '🔋' }
+    };
+    return configs[type] || configs['Normal'];
+  };
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: 'background.default' }}>
@@ -649,64 +657,87 @@ const TabPanel = ({ children, value, index }) => (
                   <TableRow sx={{ bgcolor: alpha(theme.palette.grey[100], 0.5) }}>
                     <TableCell sx={{ fontWeight: 600 }}>ID</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>Utilizador</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Posto</TableCell>
+
                     <TableCell sx={{ fontWeight: 600 }}>Data/Hora</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>Estado</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Tipo Caregamento</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>Preço</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>Ações</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
-                  {reservaData.map((reservation) => (
-                    <TableRow key={reservation.idReserva} hover sx={{ '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) } }}>
-                      <TableCell>#{reservation.idReserva}</TableCell>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                          <Avatar sx={{ bgcolor: 'grey.300', width: 40, height: 40 }}>
-                            <UserIcon />
-                          </Avatar>
-                          <Box>
-                            <Typography variant="body2" fontWeight="medium">
-                              {reservation.nomeUsuario}
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                             {reservation.nameCliente}
-                            </Typography>
+          <TableBody>
+                  {reservaData.map((reservation) => {
+                    const typeConfig = getTypeConfig(reservation.tipoCaregamento);
+
+                    return (
+                      <TableRow key={reservation.idReserva} hover sx={{ '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) } }}>
+                        <TableCell>#{reservation.idReserva}</TableCell>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Avatar sx={{ bgcolor: 'grey.300', width: 40, height: 40 }}>
+                              <UserIcon />
+                            </Avatar>
+                            <Box>
+                              <Typography variant="body2" fontWeight="medium">
+                                {reservation.nomeUsuario}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                {reservation.nameCliente}
+                              </Typography>
+                            </Box>
                           </Box>
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body2">
-                          {reservation.dataReserva}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {reservation.horaReserva}
-                         
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Chip 
-                          label={reservation.statusReserva} 
-                          color={getStatusColor(reservation.statusReserva)}
-                          size="small"
-                          sx={{ fontWeight: 500 }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body2" fontWeight="medium">
-                          €{reservation.valorReserva.toFixed(2)}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <IconButton 
-                          color="primary"
-                          onClick={() => setEditingReservation(reservation.idReserva)}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2">
+                            {reservation.stationName}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2">
+                            {reservation.dataReserva}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {reservation.horaReserva}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Chip 
+                            label={reservation.statusReserva} 
+                            color={getStatusColor(reservation.statusReserva)}
+                            size="small"
+                            sx={{ fontWeight: 500 }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                        
+                          <Chip
+                            label={`${typeConfig.icon} ${reservation.tipoCaregamento}`}
+                            sx={{ 
+                              bgcolor: typeConfig.color, 
+                              color: 'white',
+                              fontSize: '0.75rem'
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2" fontWeight="medium">
+                            €{reservation.valorReserva.toFixed(2)}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <IconButton 
+                            color="primary"
+                            onClick={() => setEditingReservation(reservation.idReserva)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
+
               </Table>
             </TableContainer>
           </TabPanel>
