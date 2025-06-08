@@ -90,6 +90,7 @@ public class ReservaControler {
         try{
             precoReserva = station.get().getPricePerHour() * Double.parseDouble(duracaoReserva);
         }catch (Exception e){
+            logger.error(e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Reserva reserva = new Reserva(person.getId(),ReservaStatus.PENDENTE,dataReserva,precoReserva, station.get().getName(),stationID,horaReserva);
