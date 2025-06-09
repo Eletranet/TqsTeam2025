@@ -31,7 +31,7 @@ return (
       { window.location.pathname !== "/loguin"  && window.location.pathname !=="/register" ? (
           <>
           
-              <Button color="inherit" onClick={()=>{navigator("/minhas_reservas")}}>Minhas Reservas</Button>
+              <Button color="inherit" id="minhasreservasbtn" onClick={()=>{navigator("/minhas_reservas")}}>Minhas Reservas</Button>
               <Button color="inherit" onClick={()=>{navigator("/mapa")}}>Ver Postos</Button>
               <Button color="inherit" onClick={()=>{navigator("/rotas")}}>Rotas Personalizadas</Button>
 
