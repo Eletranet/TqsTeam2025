@@ -1061,7 +1061,8 @@ const Mapa = () => {
                   name="TIPO2"
                 />
               } 
-              label="TIPO2" 
+              label="TIPO2"
+              id='TIPO2' 
             />
             <FormControlLabel 
               control={
@@ -1087,7 +1088,7 @@ const Mapa = () => {
 
           {/* Contador de estações filtradas */}
           <Box sx={{ mt: 2, p: 1, bgcolor: '#e3f2fd', borderRadius: 1 }}>
-            <Typography variant="caption" color="primary">
+            <Typography id ="disponiveisafterfilter" variant="caption" color="primary">
               Mostrando {filteredStations.length} de {stations.length} estações
             </Typography>
           </Box>
@@ -1242,7 +1243,9 @@ const PoiMarkers = (props: { pois: Poi[], onMarkerClick: (poi: Poi) => void }) =
           position={poi.location}
           ref={marker => setMarkerRef(marker, poi.key)}
           clickable={true}
-          onClick={(ev) => handleClick(poi, ev)}
+          id={`marker-${poi.key}`}
+          onClick={(ev) =>handleClick(poi, ev)}
+        
         >
           <Pin 
             background={'#222'} 
